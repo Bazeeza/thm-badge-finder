@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ====== SEO: replace bazeeza before publishing ====== -->
+  <title>TryHackMe Badge Finder — every badge and the room that unlocks it</title>
+  <meta name="description" content="A searchable list of every TryHackMe badge with direct links to the rooms, modules and series that award them. Track which badges you've earned, filter by category, and find the exact room for Blue, OWASP Top 10, Advent of Cyber, Sleuth badges and more.">
+  <meta name="keywords" content="TryHackMe badges, TryHackMe badge rooms, how to get TryHackMe badges, TryHackMe badge list, THM badges, TryHackMe rooms with badges, TryHackMe achievements, Advent of Cyber badge, TryHackMe Blue badge, TryHackMe OWASP badge">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://bazeeza.github.io/thm-badge-finder/">
+  <meta name="theme-color" content="#141821">
+
+  <!-- Open Graph / social cards -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="TryHackMe Badge Finder">
+  <meta property="og:title" content="TryHackMe Badge Finder — every badge and the room that unlocks it">
+  <meta property="og:description" content="Searchable list of all TryHackMe badges with links to the rooms that award them. Free, community-maintained, with a built-in progress tracker.">
+  <meta property="og:url" content="https://bazeeza.github.io/thm-badge-finder/">
+  <meta property="og:image" content="https://bazeeza.github.io/thm-badge-finder/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="TryHackMe Badge Finder">
+  <meta name="twitter:description" content="Every TryHackMe badge, and the exact room that unlocks it.">
+  <meta name="twitter:image" content="https://bazeeza.github.io/thm-badge-finder/assets/og-image.png">
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "TryHackMe Badge Finder",
+    "url": "https://bazeeza.github.io/thm-badge-finder/",
+    "description": "Every TryHackMe badge and the room, module or series that awards it.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://bazeeza.github.io/thm-badge-finder/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I get badges on TryHackMe?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Most badges are awarded automatically when you complete a specific room, finish the last room of a module, or complete every room of a series. Others come from streaks, weekly leagues and King of the Hill. This page lists the exact room for each one." }
+      },
+      {
+        "@type": "Question",
+        "name": "Why can't I click a badge on TryHackMe to see which room gives it?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Badge icons on profiles aren't linked to rooms. That's the gap this site fills: search a badge name and get the room link." }
+      },
+      {
+        "@type": "Question",
+        "name": "I completed the room but didn't get the badge. What now?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Check that every task in the room shows 100%, that you completed the right room (several badges have an older and a newer version), and for module and series badges that you enrolled through the module or series page. Badges can take a few minutes to appear. If it's still missing, TryHackMe support can re-sync it." }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="TryHackMe Badge Finder, home">
+      <svg viewBox="0 0 26 26" aria-hidden="true"><polygon points="13,1 24,7 24,19 13,25 2,19 2,7" fill="none" stroke="#E0B45A" stroke-width="2"/><polygon points="13,7 18.5,10 18.5,16 13,19 7.5,16 7.5,10" fill="#E0B45A"/></svg>
+      Badge Finder
+    </a>
+    <nav class="topbar-nav" aria-label="Sections">
+      <a href="#badges">Badges</a>
+      <a href="#other-badges">Streaks &amp; leagues</a>
+      <a href="#how">How badges work</a>
+      <a href="#contribute">Contribute</a>
+    </nav>
+    <span class="spacer"></span>
+    <div class="progress-pill" title="Saved in this browser only">
+      <span id="progress-text">0 / 0 earned</span>
+      <span class="bar" aria-hidden="true"><i id="progress-bar"></i></span>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <h1>Every TryHackMe badge, and the room that unlocks it.</h1>
+      <p class="lead">Badge icons on TryHackMe aren't clickable, so finding the right room means guessing. This is the lookup table the platform doesn't have: search a badge, open the room, mark it earned.</p>
+
+      <form class="search" role="search" onsubmit="return false">
+        <label>
+          <span class="visually-hidden">Search badges and rooms</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <input id="search" type="search" placeholder="Search a badge, a room, or a URL fragment…" autocomplete="off" spellcheck="false">
+          <kbd aria-hidden="true">/</kbd>
+        </label>
+      </form>
+
+      <ul class="facts">
+        <li><b id="fact-badges">0</b> earnable badges</li>
+        <li><b id="fact-rooms">0</b> linked rooms and modules</li>
+        <li>Updated <b id="fact-updated"></b></li>
+        <li>Community-maintained, not affiliated with TryHackMe</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="toolbar" id="badges">
+    <div class="wrap">
+      <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
+      <div class="right">
+        <label class="earn" style="margin:0">
+          <input type="checkbox" id="only-unearned">
+          <span class="box"><svg viewBox="0 0 12 12" fill="none" stroke="#1A1406" stroke-width="2"><path d="M2 6.5l2.6 2.5L10 3.5"/></svg></span>
+          Hide earned
+        </label>
+        <select class="select" id="sort" aria-label="Sort badges">
+          <option value="category">By category</option>
+          <option value="name">A to Z</option>
+          <option value="rooms">Most rooms first</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Room badges</h2>
+        <p>Showing <span id="result-count">0</span>. Click a badge name to copy its link; tick a card to track it.</p>
+      </div>
+      <div class="grid" id="grid" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section id="other-badges">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Badges with no room</h2>
+        <p>Earned through habits and competition rather than a single room.</p>
+      </div>
+      <div class="other" id="other"></div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap two-col">
+      <div class="prose">
+        <h2>How badges work</h2>
+        <h3>Three ways a room badge is awarded</h3>
+        <ol>
+          <li><strong>Single room.</strong> Finish every task and the badge appears on your profile within minutes. Example: Blue, OhSINT, Hammer.</li>
+          <li><strong>Module badge.</strong> The badge is attached to the last room of a module, but it checks that the whole module is done. Finish the earlier rooms first or the final room won't trigger it. Example: Networking Nerd, Metasploitable, Packet Master.</li>
+          <li><strong>Series badge.</strong> Enrol from <em>Learn, then Practice, then Series</em> and complete every room inside the series page. Example: WindCorp, Overpassed, Pentester Tools.</li>
+        </ol>
+        <h3>Old room, new room</h3>
+        <p>When TryHackMe refreshes a room, the badge usually moves to the new version. OWASP Top 10 and Hash Cracker are the classic traps — the room page may still show the badge art while the trigger lives elsewhere. Cards on this site list the current trigger first.</p>
+        <h3>Didn't get it?</h3>
+        <ul>
+          <li>Open the room and confirm it shows 100% complete, including tasks with no questions.</li>
+          <li>For module and series badges, open the module page and confirm every room is ticked.</li>
+          <li>Refresh your profile after a few minutes; badges aren't always instant.</li>
+          <li>Still missing? Ask TryHackMe support to re-sync your room completions.</li>
+        </ul>
+      </div>
+      <div class="prose">
+        <h2>Suggested order</h2>
+        <p>If you want badges fast, this is the order most people find efficient. It's an opinion, not an official path.</p>
+        <ol>
+          <li><strong>Fundamentals first:</strong> cat linux.txt, Networking Nerd, Webbed, World Wide Web — they're part of the Pre Security path anyway.</li>
+          <li><strong>Quick wins:</strong> Blue, Ice, OhSINT, Pentesting Principles, Security Awareness.</li>
+          <li><strong>Web track:</strong> OWASP Top 10, Intro to Web Hacking, Burp'ed, Sword Apprentice, System Sniffer, Client-Side Champ, SQL Slayer, Authentication Striker, HTTP Smuggler.</li>
+          <li><strong>Defensive track:</strong> Wireshark, Packet Master, Logging Legend, Phishing, then the SOC rooms and the five Sleuth badges.</li>
+          <li><strong>Offensive track:</strong> Linux PrivEsc, Windows Priv Esc, Metasploitable, Hash Cracker, then Wreath, HoloLive and ADversary.</li>
+          <li><strong>Seasonal:</strong> Advent of Cyber runs every December and is the easiest high-value badge of the year.</li>
+        </ol>
+        <h3>Show your progress</h3>
+        <p>Tick the badges you own. Progress stays in this browser; use the buttons below to move it between devices or post it.</p>
+        <p>
+          <button class="btn primary" id="share" type="button">Copy share text</button>
+          <button class="btn" id="export" type="button">Export progress</button>
+          <label class="btn" for="import">Import progress</label>
+          <input class="visually-hidden" type="file" id="import" accept="application/json">
+          <button class="btn ghost danger" id="reset" type="button">Clear</button>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contribute">
+    <div class="wrap prose">
+      <h2>Found a mistake? New badge?</h2>
+      <p>Rooms get renamed and retired, and TryHackMe ships new badges without a changelog. The fastest way to fix this page is to
+        <a id="report-link" data-repo="bazeeza/thm-badge-finder" href="https://github.com/bazeeza/thm-badge-finder/issues/new">open an issue</a>
+        with the badge name and the room link, or edit <code>data/badges.js</code> and send a pull request. Entries marked <em>needs verification</em> are the ones we'd love confirmed first.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Badge names and artwork belong to TryHackMe. This site is an independent community index and is not affiliated with or endorsed by TryHackMe.</p>
+    <p class="noprint">Source on <a href="https://github.com/bazeeza/thm-badge-finder">GitHub</a>. Based on the community list started by PYROMANIA6 on r/tryhackme and cross-checked against thmrevenant's badge table. Page data version <span id="site-version"></span>.</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="data/badges.js"></script>
+<script src="app.js"></script>
+<script>document.getElementById("site-version").textContent = (window.SITE && window.SITE.version) || "";</script>
+</body>
+</html>

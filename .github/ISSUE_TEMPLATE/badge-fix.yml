@@ -1,0 +1,36 @@
+name: Fix a badge
+description: A badge is missing, points to the wrong room, or has been retired.
+title: "[badge] "
+labels: ["data"]
+body:
+  - type: input
+    id: badge
+    attributes:
+      label: Badge name
+      description: Exactly as it appears on TryHackMe.
+      placeholder: Hash Cracker
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What's wrong?
+      options:
+        - Badge is missing from the list
+        - Wrong room linked
+        - Room was renamed or moved
+        - Badge was retired / can't be earned anymore
+        - Note is inaccurate
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: room
+    attributes:
+      label: Correct room / module URL
+      placeholder: https://tryhackme.com/room/crackthehashlevel2
+  - type: textarea
+    id: proof
+    attributes:
+      label: How do you know?
+      description: e.g. "I completed only this room and the badge appeared", or a screenshot.

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://bazeeza.github.io/thm-badge-finder/sitemap.xml

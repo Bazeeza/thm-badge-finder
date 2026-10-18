@@ -1,0 +1,19 @@
+name: Check room links
+on:
+  schedule:
+    - cron: "0 6 * * 1"   # every Monday 06:00 UTC
+  workflow_dispatch:
+  pull_request:
+    paths: ["data/badges.js"]
+jobs:
+  lychee:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract URLs from the data file
+        run: grep -oE 'https://tryhackme\.com/[^" ]+' data/badges.js | sort -u > urls.txt && wc -l urls.txt
+      - name: Check links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --no-progress --accept 200,301,302,403 --max-concurrency 4 urls.txt
+          fail: true
