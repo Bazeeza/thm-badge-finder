@@ -1,799 +1,385 @@
 /* =====================================================================
-   TryHackMe Badge Finder — badge dataset
+   TryHackMe Badge Finder — badge dataset (v2, 2026-10-18)
    ---------------------------------------------------------------------
-   This file is the single source of truth. index.html reads it, and
-   scripts/build.py turns it into the README table + sitemap.
+   Single source of truth. index.html reads it; scripts/build.py turns it
+   into BADGES.md, sitemap.xml and the README table.
 
-   Each badge:
-     slug      unique id, also the image file name: assets/badges/<slug>.png
-     name      badge name exactly as shown on TryHackMe
-     category  one of: fundamentals | web | offensive | defensive |
-               devsecops | engineering | events | series | discontinued
-     rooms     list of { title, url, kind } — kind: "room" | "module" | "path"
-     note      how the badge is actually awarded / gotchas (optional)
-     aliases   other names people use for it (optional, searchable)
-     verify    true when the room/badge pairing still needs confirmation
+   Field reference
+     slug      unique id; also the local image name assets/badges/<slug>.png
+     name      badge title exactly as TryHackMe shows it
+     desc      TryHackMe's own one-line description (from the public
+               profile-badges API). Blank when not yet captured.
+     img       file name on TryHackMe's badge CDN
+               (https://assets.tryhackme.com/img/badges/<img>). The site
+               loads this first, then assets/badges/<slug>.png, then a
+               placeholder.
+     category  fundamentals | web | offensive | defensive | ai | devsecops |
+               engineering | events | series | soc-sim | leagues | streaks |
+               platform | discontinued
+     rooms     [{ title, url, kind: "room" | "module" | "path" | "feature" }]
+     note      how it's really awarded, gotchas
+     aliases   other names (searchable)
+     verify    true = mapping is inferred (module order, name match) and
+               still needs a confirmation from someone who earned it
    ===================================================================== */
+window.BADGE_IMG_BASE = "https://assets.tryhackme.com/img/badges/";
+
 window.BADGES = [
-  /* ----------------------------- Fundamentals ------------------------ */
-  {
-    slug: "world-wide-web",
-    name: "World Wide Web",
-    category: "fundamentals",
-    rooms: [
-      { title: "Putting it all together", url: "https://tryhackme.com/room/puttingitalltogether", kind: "room" }
-    ],
-    note: "Last room of the Web Fundamentals module (Pre Security path)."
-  },
-  {
-    slug: "webbed",
-    name: "Webbed",
-    category: "fundamentals",
-    rooms: [
-      { title: "HTTP in Detail", url: "https://tryhackme.com/room/httpindetail", kind: "room" }
-    ]
-  },
-  {
-    slug: "cat-linux-txt",
-    name: "cat linux.txt",
-    category: "fundamentals",
-    rooms: [
-      { title: "Linux Fundamentals Part 1", url: "https://tryhackme.com/room/linuxfundamentalspart1", kind: "room" },
-      { title: "Linux Fundamentals Part 2", url: "https://tryhackme.com/room/linuxfundamentalspart2", kind: "room" },
-      { title: "Linux Fundamentals Part 3", url: "https://tryhackme.com/room/linuxfundamentalspart3", kind: "room" }
-    ],
-    note: "Awarded on completing the Linux Fundamentals trilogy — finish all three parts."
-  },
-  {
-    slug: "networking-nerd",
-    name: "Networking Nerd",
-    category: "fundamentals",
-    rooms: [
-      { title: "Network Fundamentals (module)", url: "https://tryhackme.com/module/network-fundamentals", kind: "module" },
-      { title: "Extending Your Network", url: "https://tryhackme.com/room/extendingyournetwork", kind: "room" }
-    ],
-    note: "Complete the whole Network Fundamentals module. The badge is granted when you finish its last room, Extending Your Network."
-  },
-  {
-    slug: "pentesting-principles",
-    name: "Pentesting Principles",
-    category: "fundamentals",
-    rooms: [
-      { title: "Principles of Security", url: "https://tryhackme.com/room/principlesofsecurity", kind: "room" }
-    ]
-  },
-  {
-    slug: "security-awareness",
-    name: "Security Awareness",
-    category: "fundamentals",
-    rooms: [
-      { title: "Common Attacks", url: "https://tryhackme.com/room/commonattacks", kind: "room" }
-    ]
-  },
+  /* ============================ Fundamentals ========================= */
+  { slug: "world-wide-web", name: "World Wide Web", desc: "Completing the 'How The Web Works' module", img: "howthewebworks.png", category: "fundamentals",
+    rooms: [ { title: "How The Web Works (module)", url: "https://tryhackme.com/module/how-the-web-works", kind: "module" }, { title: "Putting it all together", url: "https://tryhackme.com/room/puttingitalltogether", kind: "room" } ],
+    note: "Module badge from the Pre Security path. Triggers on the last room, Putting it all together." },
+  { slug: "webbed", name: "Webbed", desc: "Understands how the world wide web works", img: "webbed.png", category: "fundamentals",
+    rooms: [ { title: "HTTP in Detail", url: "https://tryhackme.com/room/httpindetail", kind: "room" } ] },
+  { slug: "cat-linux-txt", name: "cat linux.txt", desc: "Being competent in Linux", img: "linux.png", category: "fundamentals",
+    rooms: [ { title: "Linux Fundamentals Part 1", url: "https://tryhackme.com/room/linuxfundamentalspart1", kind: "room" }, { title: "Linux Fundamentals Part 2", url: "https://tryhackme.com/room/linuxfundamentalspart2", kind: "room" }, { title: "Linux Fundamentals Part 3", url: "https://tryhackme.com/room/linuxfundamentalspart3", kind: "room" } ],
+    note: "Awarded on finishing the Linux Fundamentals trilogy." },
+  { slug: "networking-nerd", name: "Networking Nerd", desc: "Completing the 'Network Fundamentals' module", img: "networkfundamentals.png", category: "fundamentals",
+    rooms: [ { title: "Network Fundamentals (module)", url: "https://tryhackme.com/module/network-fundamentals", kind: "module" }, { title: "Extending Your Network", url: "https://tryhackme.com/room/extendingyournetwork", kind: "room" } ],
+    note: "Module badge. Finish every room; it unlocks on the last one, Extending Your Network." },
+  { slug: "pentesting-principles", name: "Pentesting Principles", desc: "Completing the 'Introduction to Pentesting' module", img: "introtooffensivesecurity.png", category: "fundamentals",
+    rooms: [ { title: "Introduction to Pentesting (module)", url: "https://tryhackme.com/module/introduction-to-pentesting", kind: "module" }, { title: "Principles of Security", url: "https://tryhackme.com/room/principlesofsecurity", kind: "room" } ],
+    note: "Module badge; Principles of Security is the room that triggers it." },
+  { slug: "security-awareness", name: "Security Awareness", desc: "Completing the cyber security awareness module", img: "securityawareness.png", category: "fundamentals",
+    rooms: [ { title: "Security Awareness (module)", url: "https://tryhackme.com/module/security-awareness", kind: "module" }, { title: "Common Attacks", url: "https://tryhackme.com/room/commonattacks", kind: "room" } ],
+    note: "Module badge; Common Attacks is the room that triggers it." },
 
-  /* --------------------------------- Web ----------------------------- */
-  {
-    slug: "owasp-top-10",
-    name: "OWASP Top 10",
-    category: "web",
-    rooms: [
-      { title: "OWASP Top 10 - 2021", url: "https://tryhackme.com/room/owasptop102021", kind: "room" },
-      { title: "OWASP Top 10 (original 2017 room)", url: "https://tryhackme.com/room/owasptop10", kind: "room" }
-    ],
-    note: "The 2021 room is the current one. The original room also awarded the badge for users who completed it before the refresh."
-  },
-  {
-    slug: "intro-to-web-hacking",
-    name: "Intro to Web Hacking",
-    category: "web",
-    rooms: [
-      { title: "Intro to Web Hacking (module)", url: "https://tryhackme.com/module/intro-to-web-hacking", kind: "module" },
-      { title: "Command Injection", url: "https://tryhackme.com/room/oscommandinjection", kind: "room" }
-    ],
-    note: "Module badge — it unlocks on the module's final room, Command Injection."
-  },
-  {
-    slug: "burped",
-    name: "Burp'ed",
-    category: "web",
-    aliases: ["Burped", "Burp Suite"],
-    rooms: [
-      { title: "Burp Suite (module)", url: "https://tryhackme.com/module/learn-burp-suite", kind: "module" },
-      { title: "Burp Suite: Extensions", url: "https://tryhackme.com/room/burpsuiteextensions", kind: "room" }
-    ],
-    note: "Module badge — awarded when you complete Burp Suite: Extensions, the last room of the module."
-  },
-  {
-    slug: "sql-slayer",
-    name: "SQL Slayer",
-    category: "web",
-    rooms: [
-      { title: "Advanced SQL Injection", url: "https://tryhackme.com/room/advancedsqlinjection", kind: "room" }
-    ]
-  },
-  {
-    slug: "sword-apprentice",
-    name: "Sword Apprentice",
-    category: "web",
-    rooms: [
-      { title: "SQLMap: The Basics", url: "https://tryhackme.com/room/sqlmapthebasics", kind: "room" }
-    ]
-  },
-  {
-    slug: "authentication-striker",
-    name: "Authentication Striker",
-    category: "web",
-    rooms: [
-      { title: "Hammer", url: "https://tryhackme.com/room/hammer", kind: "room" }
-    ]
-  },
-  {
-    slug: "system-sniffer",
-    name: "System Sniffer",
-    category: "web",
-    rooms: [
-      { title: "File Inclusion, Path Traversal", url: "https://tryhackme.com/room/filepathtraversal", kind: "room" }
-    ]
-  },
-  {
-    slug: "client-side-champ",
-    name: "Client-Side Champ",
-    category: "web",
-    rooms: [
-      { title: "Whats Your Name?", url: "https://tryhackme.com/room/whatsyourname", kind: "room" }
-    ]
-  },
-  {
-    slug: "http-smuggler",
-    name: "HTTP Smuggler",
-    category: "web",
-    rooms: [
-      { title: "El Bandito", url: "https://tryhackme.com/room/elbandito", kind: "room" }
-    ]
-  },
-  {
-    slug: "opt-m0th3r",
-    name: "/opt/m0th3r",
-    category: "web",
-    aliases: ["opt mother", "Mother's Secret"],
-    rooms: [
-      { title: "Mother's Secret", url: "https://tryhackme.com/room/codeanalysis", kind: "room" }
-    ]
-  },
+  /* ================================ Web ============================== */
+  { slug: "owasp-top-10", name: "OWASP Top 10", desc: "Understanding every OWASP vulnerability", img: "owasptop10.png", category: "web",
+    rooms: [ { title: "OWASP Top 10 - 2021", url: "https://tryhackme.com/room/owasptop102021", kind: "room" }, { title: "OWASP Top 10 (original 2017 room)", url: "https://tryhackme.com/room/owasptop10", kind: "room" } ],
+    note: "The 2021 room is the current trigger. The original room also awarded it before the refresh." },
+  { slug: "intro-to-web-hacking", name: "Intro to Web Hacking", desc: "Completing the 'Introduction to Web Hacking' module", img: "introtowebsecurity.png", category: "web",
+    rooms: [ { title: "Intro to Web Hacking (module)", url: "https://tryhackme.com/module/intro-to-web-hacking", kind: "module" }, { title: "Command Injection", url: "https://tryhackme.com/room/oscommandinjection", kind: "room" } ],
+    note: "Module badge; unlocks on the final room, Command Injection." },
+  { slug: "burped", name: "Burp'ed", desc: "Completing the Burp Suite module", img: "burpsuite.png", category: "web", aliases: ["Burped", "Burp Suite"],
+    rooms: [ { title: "Burp Suite (module)", url: "https://tryhackme.com/module/learn-burp-suite", kind: "module" }, { title: "Burp Suite: Extensions", url: "https://tryhackme.com/room/burpsuiteextensions", kind: "room" } ],
+    note: "Module badge; unlocks on the last room, Burp Suite: Extensions." },
+  { slug: "sql-slayer", name: "SQL Slayer", desc: "Conquered Advanced SQL Injection", img: "injection.png", category: "web",
+    rooms: [ { title: "Advanced SQL Injection", url: "https://tryhackme.com/room/advancedsqlinjection", kind: "room" } ] },
+  { slug: "sword-apprentice", name: "Sword Apprentice", desc: "Completing the SQLMap room", img: "swordapprentice.png", category: "web",
+    rooms: [ { title: "SQLMap: The Basics", url: "https://tryhackme.com/room/sqlmapthebasics", kind: "room" } ] },
+  { slug: "authentication-striker", name: "Authentication Striker", desc: "Used the Hammer to bypass authentication", img: "authentication.png", category: "web",
+    rooms: [ { title: "Hammer", url: "https://tryhackme.com/room/hammer", kind: "room" } ] },
+  { slug: "system-sniffer", name: "System Sniffer", desc: "Completed the File Path traversal room", img: "serversideattack.png", category: "web",
+    rooms: [ { title: "File Inclusion, Path Traversal", url: "https://tryhackme.com/room/filepathtraversal", kind: "room" } ] },
+  { slug: "client-side-champ", name: "Client-Side Champ", desc: "Successfully exploited client-side vulnerabilities", img: "clientsideattack.png", category: "web",
+    rooms: [ { title: "Whats Your Name?", url: "https://tryhackme.com/room/whatsyourname", kind: "room" } ] },
+  { slug: "http-smuggler", name: "HTTP Smuggler", desc: "Finished the El Bandito challenge", img: "httprequestsmuggling.png", category: "web",
+    rooms: [ { title: "El Bandito", url: "https://tryhackme.com/room/elbandito", kind: "room" } ] },
+  { slug: "waf-evasion", name: "WAF Evasion", desc: "Skilled in bypassing WAF", img: "web-application-3.png", category: "web", verify: true,
+    rooms: [ { title: "Bypassing WAF (module)", url: "https://tryhackme.com/module/bypassingwaf", kind: "module" }, { title: "WAF: Introduction", url: "https://tryhackme.com/room/wafintroduction", kind: "room" }, { title: "WAF: Exploitation Techniques", url: "https://tryhackme.com/room/wafexploitationtechniques", kind: "room" }, { title: "Padelify", url: "https://tryhackme.com/room/padelify", kind: "room" }, { title: "Farewell", url: "https://tryhackme.com/room/farewell", kind: "room" } ],
+    note: "Module badge for the Bypassing WAF module (Web Application Pentesting path). Mapping inferred from the badge description; confirm which room triggers it." },
+  { slug: "noscoperce", name: "NoScopeRCE", desc: "Completing the NoScopeRCE room", img: "noscoperce.svg", category: "web",
+    rooms: [ { title: "NoScope: Finding RCE", url: "https://tryhackme.com/room/noscoperce", kind: "room" } ],
+    note: "Part of the Custom Tooling module, but the badge is tied to this single room." },
+  { slug: "tooling-specialist", name: "Tooling Specialist", desc: "", img: "", category: "web", verify: true,
+    rooms: [ { title: "Custom Tooling (module)", url: "https://tryhackme.com/module/custom-tooling", kind: "module" }, { title: "Custom Tooling Using Python", url: "https://tryhackme.com/room/customtoolingpython", kind: "room" }, { title: "Custom Tooling using Burp", url: "https://tryhackme.com/room/customtoolingviaburp", kind: "room" }, { title: "Tooling via Browser Automation", url: "https://tryhackme.com/room/customtoolingviabrowserautomation", kind: "room" }, { title: "NoScope: Finding RCE", url: "https://tryhackme.com/room/noscoperce", kind: "room" }, { title: "CAPTCHApocalypse", url: "https://tryhackme.com/room/captchapocalypse", kind: "room" } ],
+    note: "Most likely the module badge for Custom Tooling (Web Application Pentesting path). Not yet confirmed by a holder." },
+  { slug: "opt-m0th3r", name: "/opt/m0th3r", desc: "Finishing Mother's Secret!", img: "securityinthepipeline.png", category: "devsecops", aliases: ["opt mother", "Mother's Secret"],
+    rooms: [ { title: "Mother's Secret", url: "https://tryhackme.com/room/codeanalysis", kind: "room" } ],
+    note: "Security in the Pipeline module of the DevSecOps path." },
 
-  /* ------------------------------ Offensive -------------------------- */
-  {
-    slug: "blue",
-    name: "Blue",
-    category: "offensive",
-    rooms: [
-      { title: "Blue", url: "https://tryhackme.com/room/blue", kind: "room" }
-    ],
-    note: "The classic EternalBlue box. One of the first badges most people earn."
-  },
-  {
-    slug: "ice",
-    name: "Ice",
-    category: "offensive",
-    rooms: [
-      { title: "Ice", url: "https://tryhackme.com/room/ice", kind: "room" }
-    ]
-  },
-  {
-    slug: "hash-cracker",
-    name: "Hash Cracker",
-    category: "offensive",
-    rooms: [
-      { title: "Crack The Hash", url: "https://tryhackme.com/room/crackthehash", kind: "room" },
-      { title: "Crack The Hash Level 2", url: "https://tryhackme.com/room/crackthehashlevel2", kind: "room" }
-    ],
-    note: "Both rooms are required. John The Ripper: The Basics does not award this badge even though the old room page suggested it."
-  },
-  {
-    slug: "linux-privesc",
-    name: "Linux PrivEsc",
-    category: "offensive",
-    rooms: [
-      { title: "Linux PrivEsc", url: "https://tryhackme.com/room/linuxprivesc", kind: "room" },
-      { title: "Linux PrivEsc Arena", url: "https://tryhackme.com/room/linuxprivescarena", kind: "room" }
-    ],
-    note: "Either room has been reported to award it; completing both is the safe route."
-  },
-  {
-    slug: "windows-priv-esc",
-    name: "Windows Priv Esc",
-    category: "offensive",
-    rooms: [
-      { title: "Privilege Escalation (module)", url: "https://tryhackme.com/module/privilege-escalation", kind: "module" },
-      { title: "Windows PrivEsc Arena", url: "https://tryhackme.com/room/windowsprivescarena", kind: "room" }
-    ],
-    note: "Module badge — unlocks on Windows PrivEsc Arena."
-  },
-  {
-    slug: "metasploitable",
-    name: "Metasploitable",
-    category: "offensive",
-    rooms: [
-      { title: "Metasploit (module)", url: "https://tryhackme.com/module/metasploit", kind: "module" },
-      { title: "Metasploit: Meterpreter", url: "https://tryhackme.com/room/meterpreter", kind: "room" }
-    ],
-    note: "Module badge — unlocks on the final room, Metasploit: Meterpreter."
-  },
-  {
-    slug: "ohsint",
-    name: "OhSINT",
-    category: "offensive",
-    rooms: [
-      { title: "OhSINT", url: "https://tryhackme.com/room/ohsint", kind: "room" }
-    ]
-  },
-  {
-    slug: "mr-robot",
-    name: "Mr. Robot",
-    category: "offensive",
-    rooms: [
-      { title: "Mr Robot CTF", url: "https://tryhackme.com/room/mrrobot", kind: "room" }
-    ]
-  },
-  {
-    slug: "wreath",
-    name: "Wreath",
-    category: "offensive",
-    rooms: [
-      { title: "Wreath", url: "https://tryhackme.com/room/wreath", kind: "room" }
-    ],
-    note: "Long network-pivoting room; expect several sessions."
-  },
-  {
-    slug: "hololive",
-    name: "HoloLive",
-    category: "offensive",
-    rooms: [
-      { title: "Holo", url: "https://tryhackme.com/room/hololive", kind: "room" }
-    ],
-    note: "Full Active Directory network. Large, hard, and worth it."
-  },
-  {
-    slug: "adversary",
-    name: "ADversary",
-    category: "offensive",
-    aliases: ["Adversary", "Active Directory"],
-    rooms: [
-      { title: "Compromising Active Directory (module)", url: "https://tryhackme.com/module/hacking-active-directory", kind: "module" },
-      { title: "Persisting Active Directory", url: "https://tryhackme.com/room/persistingad", kind: "room" }
-    ],
-    note: "Module badge — unlocks on Persisting Active Directory."
-  },
-  {
-    slug: "red-teamer-of-the-month",
-    name: "Red Teamer of the Month",
-    category: "offensive",
-    rooms: [
-      { title: "Red Team Capstone Challenge", url: "https://tryhackme.com/room/redteamcapstonechallenge", kind: "room" }
-    ]
-  },
-  {
-    slug: "changing-hats",
-    name: "Changing Hats",
-    category: "offensive",
-    aliases: ["Purple team"],
-    rooms: [
-      { title: "Threat Emulation (module)", url: "https://tryhackme.com/module/threat-emulation", kind: "module" },
-      { title: "Atomic Bird Goes Purple #2", url: "https://tryhackme.com/room/atomicbirdtwo", kind: "room" }
-    ],
-    note: "Module badge — unlocks on Atomic Bird Goes Purple #2."
-  },
+  /* ============================= Offensive =========================== */
+  { slug: "blue", name: "Blue", desc: "Hacking into Windows via EternalBlue", img: "blue.png", category: "offensive",
+    rooms: [ { title: "Blue", url: "https://tryhackme.com/room/blue", kind: "room" } ], note: "The classic EternalBlue box. Usually the first badge people earn." },
+  { slug: "ice", name: "Ice", desc: "Exploiting Windows via a media server", img: "ice.png", category: "offensive",
+    rooms: [ { title: "Ice", url: "https://tryhackme.com/room/ice", kind: "room" } ] },
+  { slug: "hash-cracker", name: "Hash Cracker", desc: "Cracking all those hashes", img: "hashcracker.png", category: "offensive",
+    rooms: [ { title: "Crack The Hash", url: "https://tryhackme.com/room/crackthehash", kind: "room" }, { title: "Crack The Hash Level 2", url: "https://tryhackme.com/room/crackthehashlevel2", kind: "room" } ],
+    note: "Both rooms are required. John The Ripper: The Basics does not award it." },
+  { slug: "linux-privesc", name: "Linux PrivEsc", desc: "Mastering Linux Privilege Escalation", img: "linuxprivesc.png", category: "offensive",
+    rooms: [ { title: "Linux PrivEsc", url: "https://tryhackme.com/room/linuxprivesc", kind: "room" }, { title: "Linux PrivEsc Arena", url: "https://tryhackme.com/room/linuxprivescarena", kind: "room" } ],
+    note: "Either room has been reported to award it; doing both is the safe route." },
+  { slug: "windows-priv-esc", name: "Windows Priv Esc", desc: "Mastering Windows Privilege Escalation", img: "windowsprivesc.png", category: "offensive",
+    rooms: [ { title: "Privilege Escalation (module)", url: "https://tryhackme.com/module/privilege-escalation", kind: "module" }, { title: "Windows PrivEsc Arena", url: "https://tryhackme.com/room/windowsprivescarena", kind: "room" } ],
+    note: "Module badge; unlocks on Windows PrivEsc Arena." },
+  { slug: "metasploitable", name: "Metasploitable", desc: "Contains the knowledge to use Metasploit", img: "metasploit.png", category: "offensive",
+    rooms: [ { title: "Metasploit (module)", url: "https://tryhackme.com/module/metasploit", kind: "module" }, { title: "Metasploit: Meterpreter", url: "https://tryhackme.com/room/meterpreter", kind: "room" } ],
+    note: "Module badge; unlocks on the final room, Metasploit: Meterpreter." },
+  { slug: "ohsint", name: "OhSINT", desc: "Completing the OhSINT room", img: "ohsint.png", category: "offensive",
+    rooms: [ { title: "OhSINT", url: "https://tryhackme.com/room/ohsint", kind: "room" } ] },
+  { slug: "mr-robot", name: "Mr. Robot", desc: "Completing the Mr. Robot room", img: "mrrobot.png", category: "offensive",
+    rooms: [ { title: "Mr Robot CTF", url: "https://tryhackme.com/room/mrrobot", kind: "room" } ] },
+  { slug: "wreath", name: "Wreath", desc: "Hacking Wreath by exploiting and pivoting through a network", img: "wreath.png", category: "offensive",
+    rooms: [ { title: "Wreath", url: "https://tryhackme.com/room/wreath", kind: "room" } ], note: "Long pivoting network; expect several sessions." },
+  { slug: "hololive", name: "HoloLive", desc: "Hacking HoloLive by exploiting and pivoting through a network", img: "hololive.png", category: "offensive",
+    rooms: [ { title: "Holo", url: "https://tryhackme.com/room/hololive", kind: "room" } ], note: "Full Active Directory network. Large and hard." },
+  { slug: "adversary", name: "ADversary", desc: "Completing all Active Directory networks", img: "attackingad.png", category: "offensive", aliases: ["Adversary", "Active Directory"],
+    rooms: [ { title: "Compromising Active Directory (module)", url: "https://tryhackme.com/module/hacking-active-directory", kind: "module" }, { title: "Persisting Active Directory", url: "https://tryhackme.com/room/persistingad", kind: "room" } ],
+    note: "Module badge; unlocks on Persisting Active Directory." },
+  { slug: "red-teamer-of-the-month", name: "Red Teamer of the Month", desc: "Completing the Red Team Capstone Challenge!", img: "redteamcapstone.png", category: "offensive",
+    rooms: [ { title: "Red Team Capstone Challenge", url: "https://tryhackme.com/room/redteamcapstonechallenge", kind: "room" } ] },
+  { slug: "changing-hats", name: "Changing Hats", desc: "Successfully emulate threats in the Atomic Bird challenges!", img: "threatemulation.png", category: "offensive", aliases: ["Purple team"],
+    rooms: [ { title: "Threat Emulation (module)", url: "https://tryhackme.com/module/threat-emulation", kind: "module" }, { title: "Atomic Bird Goes Purple #1", url: "https://tryhackme.com/room/atomicbirdone", kind: "room" }, { title: "Atomic Bird Goes Purple #2", url: "https://tryhackme.com/room/atomicbirdtwo", kind: "room" } ],
+    note: "Module badge (SOC Level 2 Threat Emulation); unlocks on Atomic Bird Goes Purple #2." },
 
-  /* ------------------------------ Defensive -------------------------- */
-  {
-    slug: "wireshark",
-    name: "Wireshark",
-    category: "defensive",
-    rooms: [
-      { title: "Wireshark 101", url: "https://tryhackme.com/room/wireshark", kind: "room" }
-    ]
-  },
-  {
-    slug: "packet-master",
-    name: "Packet Master",
-    category: "defensive",
-    rooms: [
-      { title: "Network Security and Traffic Analysis (module)", url: "https://tryhackme.com/module/network-security-and-traffic-analysis", kind: "module" },
-      { title: "TShark Challenge II: Directory", url: "https://tryhackme.com/room/tsharkchallengestwo", kind: "room" }
-    ],
-    note: "Module badge — unlocks on the last room, TShark Challenge II. Reports say only the final four rooms of the module are needed."
-  },
-  {
-    slug: "logging-legend",
-    name: "Logging Legend",
-    category: "defensive",
-    rooms: [
-      { title: "Log Analysis (module)", url: "https://tryhackme.com/module/log-analysis", kind: "module" },
-      { title: "Intro to Log Analysis", url: "https://tryhackme.com/room/introtologanalysis", kind: "room" }
-    ],
-    note: "Module badge — the trigger room is Intro to Log Analysis."
-  },
-  {
-    slug: "phishing",
-    name: "Phishing",
-    category: "defensive",
-    rooms: [
-      { title: "Phishing (module)", url: "https://tryhackme.com/module/phishing", kind: "module" },
-      { title: "The Greenholt Phish", url: "https://tryhackme.com/room/phishingemails5fgjlzxc", kind: "room" }
-    ],
-    note: "Module badge — unlocks on the final room, The Greenholt Phish."
-  },
-  {
-    slug: "skilled-navigator",
-    name: "Skilled Navigator",
-    category: "defensive",
-    rooms: [
-      { title: "Eviction", url: "https://tryhackme.com/room/eviction", kind: "room" }
-    ],
-    note: "MITRE ATT&CK Navigator practice."
-  },
-  {
-    slug: "manic-monday",
-    name: "Manic Monday",
-    category: "defensive",
-    rooms: [
-      { title: "Monday Monitor", url: "https://tryhackme.com/room/mondaymonitor", kind: "room" }
-    ]
-  },
-  {
-    slug: "friday-fixer",
-    name: "Friday Fixer",
-    category: "defensive",
-    rooms: [
-      { title: "Friday Overtime", url: "https://tryhackme.com/room/fridayovertime", kind: "room" }
-    ]
-  },
-  {
-    slug: "handle-the-disgruntled",
-    name: "Handle the Disgruntled",
-    category: "defensive",
-    rooms: [
-      { title: "Disgruntled", url: "https://tryhackme.com/room/disgruntled", kind: "room" }
-    ]
-  },
-  {
-    slug: "to-benign-or-not-benign",
-    name: "To benign or not benign?",
-    category: "defensive",
-    rooms: [
-      { title: "Benign", url: "https://tryhackme.com/room/benign", kind: "room" }
-    ]
-  },
-  {
-    slug: "boogeyman-slayer",
-    name: "Boogeyman Slayer",
-    category: "defensive",
-    rooms: [
-      { title: "SOC Level 1 Capstone Challenges (module)", url: "https://tryhackme.com/module/soclevel1-capstone", kind: "module" },
-      { title: "Boogeyman 1", url: "https://tryhackme.com/room/boogeyman1", kind: "room" },
-      { title: "Boogeyman 2", url: "https://tryhackme.com/room/boogeyman2", kind: "room" },
-      { title: "Boogeyman 3", url: "https://tryhackme.com/room/boogeyman3", kind: "room" }
-    ],
-    note: "Awarded on Boogeyman 3. The three rooms form the SOC Level 1 capstone module."
-  },
-  {
-    slug: "intruder-alert",
-    name: "Intruder Alert",
-    category: "defensive",
-    rooms: [
-      { title: "SigHunt", url: "https://tryhackme.com/room/sighunt", kind: "room" }
-    ]
-  },
-  {
-    slug: "elksquisite",
-    name: "ELKsquisite",
-    category: "defensive",
-    rooms: [
-      { title: "Slingshot", url: "https://tryhackme.com/room/slingshot", kind: "room" }
-    ]
-  },
-  {
-    slug: "splunking",
-    name: "SPLUNKing",
-    category: "defensive",
-    rooms: [
-      { title: "Splunk: Data Manipulation", url: "https://tryhackme.com/room/splunkdatamanipulation", kind: "room" }
-    ]
-  },
-  {
-    slug: "threat-hunter",
-    name: "Threat Hunter",
-    category: "defensive",
-    rooms: [
-      { title: "Hunt Me I: Payment Collectors", url: "https://tryhackme.com/room/paymentcollectors", kind: "room" }
-    ]
-  },
-  {
-    slug: "the-best-responder",
-    name: "The Best Responder",
-    category: "defensive",
-    rooms: [
-      { title: "Lessons Learned", url: "https://tryhackme.com/room/lessonslearned", kind: "room" }
-    ]
-  },
-  {
-    slug: "malware-analysis",
-    name: "Malware Analysis",
-    category: "defensive",
-    rooms: [
-      { title: "Dynamic Analysis: Debugging", url: "https://tryhackme.com/room/advanceddynamicanalysis", kind: "room" }
-    ]
-  },
-  {
-    slug: "shield-apprentice",
-    name: "Shield Apprentice",
-    category: "defensive",
-    rooms: [
-      { title: "FlareVM: Arsenal of Tools", url: "https://tryhackme.com/room/flarevmarsenaloftools", kind: "room" }
-    ]
-  },
-  {
-    slug: "mac-sleuth",
-    name: "Mac Sleuth",
-    category: "defensive",
-    rooms: [
-      { title: "MacHunt", url: "https://tryhackme.com/room/machunt", kind: "room" }
-    ]
-  },
-  {
-    slug: "filesystem-sleuth",
-    name: "Filesystem Sleuth",
-    category: "defensive",
-    rooms: [
-      { title: "Diskrupt", url: "https://tryhackme.com/room/diskrupt", kind: "room" }
-    ]
-  },
-  {
-    slug: "memory-sleuth",
-    name: "Memory Sleuth",
-    category: "defensive",
-    rooms: [
-      { title: "Supplemental Memory", url: "https://tryhackme.com/room/supplementalmemory", kind: "room" }
-    ]
-  },
-  {
-    slug: "linux-sleuth",
-    name: "Linux Sleuth",
-    category: "defensive",
-    rooms: [
-      { title: "IronShade", url: "https://tryhackme.com/room/ironshade", kind: "room" }
-    ]
-  },
-  {
-    slug: "windows-sleuth",
-    name: "Windows Sleuth",
-    category: "defensive",
-    rooms: [
-      { title: "Blizzard", url: "https://tryhackme.com/room/blizzard", kind: "room" }
-    ]
-  },
+  /* ============================= Defensive =========================== */
+  { slug: "wireshark", name: "Wireshark", desc: "Competent with Wireshark & Packet Analysis", img: "wireshark.png", category: "defensive",
+    rooms: [ { title: "Network Traffic Analysis (SOC L1 module)", url: "https://tryhackme.com/path/outline/soclevel1", kind: "module" }, { title: "Wireshark: The Basics", url: "https://tryhackme.com/room/wiresharkthebasics", kind: "room" }, { title: "Wireshark: Packet Operations", url: "https://tryhackme.com/room/wiresharkpacketoperations", kind: "room" }, { title: "Wireshark: Traffic Analysis", url: "https://tryhackme.com/room/wiresharktrafficanalysis", kind: "room" }, { title: "Wireshark 101 (legacy room)", url: "https://tryhackme.com/room/wireshark", kind: "room" } ],
+    note: "Today it is awarded in the SOC Level 1 path after the Wireshark rooms of the Network Traffic Analysis module. The old Wireshark 101 room awarded it before the path refresh." },
+  { slug: "packet-master", name: "Packet Master", desc: "Finishing the TShark Exercises!", img: "networksecurityandtrafficanalysisv2.png", category: "defensive",
+    rooms: [ { title: "Network Security and Traffic Analysis (module)", url: "https://tryhackme.com/module/network-security-and-traffic-analysis", kind: "module" }, { title: "TShark Challenge II: Directory", url: "https://tryhackme.com/room/tsharkchallengestwo", kind: "room" } ],
+    note: "Unlocks on the last room, TShark Challenge II. Reports say only the final four rooms of the module are needed." },
+  { slug: "logging-legend", name: "Logging Legend", desc: "Completed the Log Analysis room.", img: "loganalysis.png", category: "defensive",
+    rooms: [ { title: "Log Analysis (module)", url: "https://tryhackme.com/module/log-analysis", kind: "module" }, { title: "Intro to Log Analysis", url: "https://tryhackme.com/room/introtologanalysis", kind: "room" } ] },
+  { slug: "phish-hunter", name: "Phish Hunter", desc: "Completed the Phishing Analysis room series", img: "phishing.png", category: "defensive", aliases: ["Phishing"],
+    rooms: [ { title: "Phishing (module)", url: "https://tryhackme.com/module/phishing", kind: "module" }, { title: "Phishing Analysis Fundamentals", url: "https://tryhackme.com/room/phishingemails1tryoe", kind: "room" }, { title: "Phishing Emails in Action", url: "https://tryhackme.com/room/phishingemails2rytmuv", kind: "room" }, { title: "Phishing Analysis Tools", url: "https://tryhackme.com/room/phishingemails3tryoe", kind: "room" }, { title: "Phishing Prevention", url: "https://tryhackme.com/room/phishingemails4gkxh", kind: "room" }, { title: "The Greenholt Phish", url: "https://tryhackme.com/room/phishingemails5fgjlzxc", kind: "room" }, { title: "Snapped Phish-ing Line", url: "https://tryhackme.com/room/snappedphishingline", kind: "room" } ],
+    note: "This is the badge formerly named 'Phishing'. Complete the whole Phishing Analysis module (SOC Level 1 path)." },
+  { slug: "skilled-navigator", name: "Skilled Navigator", desc: "Finishing the Eviction challenge!", img: "cyberdefenceframework.png", category: "defensive",
+    rooms: [ { title: "Eviction", url: "https://tryhackme.com/room/eviction", kind: "room" } ], note: "Last room of the Cyber Defence Frameworks module (SOC Level 1). MITRE ATT&CK Navigator practice." },
+  { slug: "manic-monday", name: "Manic Monday", desc: "Finishing the Monday Monitor challenge!", img: "endpointsecuritymonitoring.png", category: "defensive",
+    rooms: [ { title: "Monday Monitor", url: "https://tryhackme.com/room/mondaymonitor", kind: "room" } ], note: "Last room of the Wazuh for SOC and GRC module (SOC Level 2)." },
+  { slug: "friday-fixer", name: "Friday Fixer", desc: "Finishing the Friday Overtime challenge!", img: "cyberthreatintellegenceblue.png", category: "defensive",
+    rooms: [ { title: "Friday Overtime", url: "https://tryhackme.com/room/fridayovertime", kind: "room" } ], note: "SOC Level 2 capstone room." },
+  { slug: "handle-the-disgruntled", name: "Handle the Disgruntled", desc: "Finishing the Disgruntled challenge!", img: "digitalforensicsandincidentresponse.png", category: "defensive",
+    rooms: [ { title: "Disgruntled", url: "https://tryhackme.com/room/disgruntled", kind: "room" } ] },
+  { slug: "to-benign-or-not-benign", name: "To benign or not benign?", desc: "Finishing the Benign challenge!", img: "securityinformationandeventmanagement.png", category: "defensive",
+    rooms: [ { title: "Benign", url: "https://tryhackme.com/room/benign", kind: "room" } ], note: "Last room of the SIEM Triage for SOC module (SOC Level 1)." },
+  { slug: "boogeyman-slayer", name: "Boogeyman Slayer", desc: "Finishing the SOC L1 Capstone Module", img: "boogeyman3.png", category: "defensive",
+    rooms: [ { title: "SOC Level 1 Capstone Challenges (module)", url: "https://tryhackme.com/module/soclevel1-capstone", kind: "module" }, { title: "Tempest", url: "https://tryhackme.com/room/tempestincident", kind: "room" }, { title: "Boogeyman 1", url: "https://tryhackme.com/room/boogeyman1", kind: "room" }, { title: "Boogeyman 2", url: "https://tryhackme.com/room/boogeyman2", kind: "room" }, { title: "Boogeyman 3", url: "https://tryhackme.com/room/boogeyman3", kind: "room" } ],
+    note: "Module badge; the image is Boogeyman 3's, which is the room that triggers it." },
+  { slug: "intruder-alert", name: "Intruder Alert", desc: "Completed the Sighunt challenge!", img: "detectionengineering.png", category: "defensive",
+    rooms: [ { title: "SigHunt", url: "https://tryhackme.com/room/sighunt", kind: "room" } ], note: "Detection Engineering for SOC module (SOC Level 2)." },
+  { slug: "elksquisite", name: "ELKsquisite", desc: "Completed the Slingshot challenge!", img: "advancedelk.png", category: "defensive",
+    rooms: [ { title: "Slingshot", url: "https://tryhackme.com/room/slingshot", kind: "room" } ], note: "Last room of the Advanced Elastic module (SOC Level 2)." },
+  { slug: "splunking", name: "SPLUNKing", desc: "Completed the Splunk: Parsing and Manipulating Data room!", img: "advancedsplunk.png", category: "defensive",
+    rooms: [ { title: "Splunk: Data Manipulation", url: "https://tryhackme.com/room/splunkdatamanipulation", kind: "room" } ], note: "Advanced Splunk module (SOC Level 2)." },
+  { slug: "threat-hunter", name: "Threat Hunter", desc: "Completed the Payment Collectors challenge!", img: "threathunting.png", category: "defensive",
+    rooms: [ { title: "Hunt Me I: Payment Collectors", url: "https://tryhackme.com/room/paymentcollectors", kind: "room" } ], note: "Threat Hunting module (SOC Level 2)." },
+  { slug: "the-best-responder", name: "The Best Responder", desc: "Completed the Lessons Learned room!", img: "incidentresponse.png", category: "defensive",
+    rooms: [ { title: "Lessons Learned", url: "https://tryhackme.com/room/lessonslearned", kind: "room" } ] },
+  { slug: "malware-analysis", name: "Malware Analysis", desc: "Completed the Advanced Dynamic Analysis room.", img: "malwareanalysis.png", category: "defensive",
+    rooms: [ { title: "Dynamic Analysis: Debugging", url: "https://tryhackme.com/room/advanceddynamicanalysis", kind: "room" } ] },
+  { slug: "shield-apprentice", name: "Shield Apprentice", desc: "Completing the FlareVM room", img: "shieldapprentice.png", category: "defensive",
+    rooms: [ { title: "FlareVM: Arsenal of Tools", url: "https://tryhackme.com/room/flarevmarsenaloftools", kind: "room" } ] },
+  { slug: "malbuster", name: "MalBuster", desc: "", img: "", category: "defensive", verify: true,
+    rooms: [ { title: "Static Malware Analysis (SOC L2 module)", url: "https://tryhackme.com/path/outline/soclevel2", kind: "module" }, { title: "MalBuster", url: "https://tryhackme.com/room/malbuster", kind: "room" } ],
+    note: "Almost certainly awarded by the MalBuster room, the last room of the Static Malware Analysis module in SOC Level 2. Confirmation welcome." },
+  { slug: "apt-x-hunter", name: "APT X Hunter", desc: "", img: "", category: "defensive", verify: true,
+    rooms: [ { title: "Cyber Threat Intelligence (SOC L2 module)", url: "https://tryhackme.com/path/outline/soclevel2", kind: "module" }, { title: "Trooper", url: "https://tryhackme.com/room/trooper", kind: "room" } ],
+    note: "Trooper's first task is 'Unmasking APT X'; it is the last room of the Cyber Threat Intelligence module in SOC Level 2. Confirmation welcome." },
+  { slug: "flow-hunter", name: "Flow Hunter", desc: "", img: "", category: "defensive", verify: true,
+    rooms: [ { title: "Advanced Traffic Analysis (SOC L2 module)", url: "https://tryhackme.com/path/outline/soclevel2", kind: "module" }, { title: "The Silent Transfer", url: "https://tryhackme.com/room/operationsilenttransfer", kind: "room" } ],
+    note: "Best guess: module badge for Advanced Traffic Analysis (Zeek, Zui, Snort, The Silent Transfer) in SOC Level 2. Unconfirmed." },
+  { slug: "domain-guardian", name: "Domain Guardian", desc: "", img: "", category: "defensive", verify: true,
+    rooms: [ { title: "Active Directory for SOC (SOC L2 module)", url: "https://tryhackme.com/path/outline/soclevel2", kind: "module" }, { title: "Monitoring Active Directory", url: "https://tryhackme.com/room/monitoringactivedirectory", kind: "room" }, { title: "Detecting AD Initial Access", url: "https://tryhackme.com/room/detectingadinitialaccess", kind: "room" }, { title: "Detecting AD Credential Attacks", url: "https://tryhackme.com/room/detectingadcredentialattacks", kind: "room" }, { title: "Detecting AD Lateral Movement", url: "https://tryhackme.com/room/detectingadlateralmovement", kind: "room" }, { title: "Detecting AD Post-Exploitation", url: "https://tryhackme.com/room/detectingadpostexploitation", kind: "room" } ],
+    note: "Best guess: module badge for Active Directory for SOC in SOC Level 2. Unconfirmed." },
+  { slug: "m365-sentry", name: "M365 Sentry", desc: "", img: "", category: "defensive", verify: true,
+    rooms: [ { title: "Microsoft 365 for SOC (module)", url: "https://tryhackme.com/module/m365-monitoring-soc", kind: "module" }, { title: "M365 Monitoring Basics", url: "https://tryhackme.com/room/m365monitoringbasics", kind: "room" }, { title: "Entra ID Monitoring", url: "https://tryhackme.com/room/entraidmonitoring", kind: "room" }, { title: "Exchange Online Monitoring", url: "https://tryhackme.com/room/exchangeonlinemonitoring", kind: "room" }, { title: "SharePoint Online Monitoring", url: "https://tryhackme.com/room/sharepointonlinemonitoring", kind: "room" }, { title: "Microsoft Intune Monitoring", url: "https://tryhackme.com/room/msintunemonitoring", kind: "room" } ],
+    note: "Best guess: module badge for Microsoft 365 for SOC in SOC Level 2. Unconfirmed." },
+  { slug: "soc-level-up", name: "SOC Level-Up", desc: "", img: "", category: "defensive", verify: true,
+    rooms: [ { title: "Intro to SOC Level 2 (module)", url: "https://tryhackme.com/module/intro-soc-level2", kind: "module" }, { title: "Senior Security Analyst Intro", url: "https://tryhackme.com/room/seniorsecanalystintro", kind: "room" }, { title: "SOC L2 Alert Triage", url: "https://tryhackme.com/room/socl2alerttriage", kind: "room" }, { title: "Report Writing for SOC L2", url: "https://tryhackme.com/room/reportwritingsocl2", kind: "room" }, { title: "Defensive Security Trends", url: "https://tryhackme.com/room/defensivesecuritytrends", kind: "room" } ],
+    note: "Best guess: module badge for Intro to SOC Level 2. Unconfirmed." },
 
-  /* ---------------------- Cloud, containers, DevSecOps --------------- */
-  {
-    slug: "docker",
-    name: "Docker",
-    category: "devsecops",
-    rooms: [
-      { title: "The Docker Rodeo", url: "https://tryhackme.com/room/dockerrodeo", kind: "room" }
-    ]
-  },
-  {
-    slug: "diplodocker",
-    name: "Diplodocker",
-    category: "devsecops",
-    rooms: [
-      { title: "Container Vulnerabilities", url: "https://tryhackme.com/room/containervulnerabilitiesDG", kind: "room" }
-    ]
-  },
-  {
-    slug: "the-course-awakens",
-    name: "The Course Awakens",
-    category: "devsecops",
-    rooms: [
-      { title: "Introduction to DevSecOps", url: "https://tryhackme.com/room/introductiontodevsecops", kind: "room" }
-    ]
-  },
-  {
-    slug: "terminated",
-    name: "Terminated!",
-    category: "devsecops",
-    rooms: [
-      { title: "Intro to IaC", url: "https://tryhackme.com/room/introtoiac", kind: "room" }
-    ]
-  },
-  {
-    slug: "pipeline-lieutenant",
-    name: "Pipeline Lieutenant",
-    category: "devsecops",
-    aliases: ["CI/CD and Build Security"],
-    rooms: [
-      { title: "CI/CD and Build Security", url: "https://tryhackme.com/room/cicdandbuildsecurity", kind: "room" }
-    ]
-  },
+  /* SOC Level 1 path module badges (order confirmed from earn timelines) */
+  { slug: "first-step-into-soc", name: "First Step into SOC", desc: "Explored emerging threats and SOC response", img: "first-step-into-soc.png", category: "defensive",
+    rooms: [ { title: "SOC Level 1 path", url: "https://tryhackme.com/path/outline/soclevel1", kind: "path" }, { title: "Junior Security Analyst Intro", url: "https://tryhackme.com/room/jrsecanalystintrouxo", kind: "room" }, { title: "SOC Role in Blue Team", url: "https://tryhackme.com/room/socroleinblueteam", kind: "room" }, { title: "Humans as Attack Vectors", url: "https://tryhackme.com/room/humansattackvectors", kind: "room" }, { title: "Systems as Attack Vectors", url: "https://tryhackme.com/room/systemsattackvectors", kind: "room" } ],
+    note: "Module badge for Blue Team Introduction, the first module of SOC Level 1." },
+  { slug: "soc-apprentice", name: "SOC Apprentice", desc: "Explored how a SOC team operates from inside", img: "soc-apprentice.png", category: "defensive",
+    rooms: [ { title: "SOC Level 1 path", url: "https://tryhackme.com/path/outline/soclevel1", kind: "path" }, { title: "SOC L1 Alert Triage", url: "https://tryhackme.com/room/socl1alerttriage", kind: "room" }, { title: "SOC L1 Alert Reporting", url: "https://tryhackme.com/room/socl1alertreporting", kind: "room" }, { title: "SOC Workbooks and Lookups", url: "https://tryhackme.com/room/socworkbookslookups", kind: "room" }, { title: "SOC Metrics and Objectives", url: "https://tryhackme.com/room/socmetricsobjectives", kind: "room" } ],
+    note: "Module badge for SOC Team Internals (SOC Level 1). The SOC Simulator scenario in this module also gives 'First alert closed'." },
+  { slug: "defensive-toolsmith", name: "Defensive Toolsmith", desc: "Mastered essential SOC tools for detection", img: "defensive-toolsmith.png", category: "defensive",
+    rooms: [ { title: "SOC Level 1 path", url: "https://tryhackme.com/path/outline/soclevel1", kind: "path" }, { title: "Introduction to EDR", url: "https://tryhackme.com/room/introductiontoedrs", kind: "room" }, { title: "Introduction to SIEM", url: "https://tryhackme.com/room/introtosiem", kind: "room" }, { title: "Splunk: The Basics", url: "https://tryhackme.com/room/splunk101", kind: "room" }, { title: "Elastic Stack: The Basics", url: "https://tryhackme.com/room/investigatingwithelk101", kind: "room" }, { title: "Introduction to SOAR", url: "https://tryhackme.com/room/soar", kind: "room" } ],
+    note: "Module badge for Core SOC Solutions (SOC Level 1)." },
+  { slug: "network-hog", name: "Network Hog", desc: "Sniffed out malicious traffic in the network", img: "network-hog.png", category: "defensive",
+    rooms: [ { title: "SOC Level 1 path", url: "https://tryhackme.com/path/outline/soclevel1", kind: "path" }, { title: "Network Security Essentials", url: "https://tryhackme.com/room/networksecurityessentials", kind: "room" }, { title: "Network Discovery Detection", url: "https://tryhackme.com/room/networkdiscoverydetection", kind: "room" }, { title: "Data Exfiltration Detection", url: "https://tryhackme.com/room/dataexfildetection", kind: "room" }, { title: "Man-in-the-Middle Detection", url: "https://tryhackme.com/room/mitmdetection", kind: "room" }, { title: "IDS Fundamentals", url: "https://tryhackme.com/room/idsfundamentals", kind: "room" }, { title: "Snort", url: "https://tryhackme.com/room/snort", kind: "room" } ],
+    note: "Module badge for Network Security Monitoring (SOC Level 1)." },
+  { slug: "web-defender", name: "Web Defender", desc: "Learned to detect common attacks on web apps", img: "web-defender.png", category: "defensive",
+    rooms: [ { title: "SOC Level 1 path", url: "https://tryhackme.com/path/outline/soclevel1", kind: "path" }, { title: "Web Security Essentials", url: "https://tryhackme.com/room/websecurityessentials", kind: "room" }, { title: "Detecting Web Attacks", url: "https://tryhackme.com/room/detectingwebattacks", kind: "room" }, { title: "Detecting Web Shells", url: "https://tryhackme.com/room/detectingwebshells", kind: "room" }, { title: "Detecting Web DDoS", url: "https://tryhackme.com/room/detectingwebddos", kind: "room" } ],
+    note: "Module badge for Web Security Monitoring (SOC Level 1)." },
+  { slug: "windows-guardian", name: "Windows Guardian", desc: "Investigated and defended Windows against threats", img: "windows-guardian.png", category: "defensive",
+    rooms: [ { title: "SOC Level 1 path", url: "https://tryhackme.com/path/outline/soclevel1", kind: "path" }, { title: "Windows Logging for SOC", url: "https://tryhackme.com/room/windowsloggingforsoc", kind: "room" }, { title: "Windows Threat Detection 1", url: "https://tryhackme.com/room/windowsthreatdetection1", kind: "room" }, { title: "Windows Threat Detection 2", url: "https://tryhackme.com/room/windowsthreatdetection2", kind: "room" }, { title: "Windows Threat Detection 3", url: "https://tryhackme.com/room/windowsthreatdetection3", kind: "room" } ],
+    note: "Module badge for Windows Security Monitoring (SOC Level 1)." },
+  { slug: "linux-guardian", name: "Linux Guardian", desc: "Stood guard against emerging Linux threats", img: "linux-guardian.png", category: "defensive",
+    rooms: [ { title: "SOC Level 1 path", url: "https://tryhackme.com/path/outline/soclevel1", kind: "path" }, { title: "Linux Logging for SOC", url: "https://tryhackme.com/room/linuxloggingforsoc", kind: "room" }, { title: "Linux Threat Detection 1", url: "https://tryhackme.com/room/linuxthreatdetection1", kind: "room" }, { title: "Linux Threat Detection 2", url: "https://tryhackme.com/room/linuxthreatdetection2", kind: "room" }, { title: "Linux Threat Detection 3", url: "https://tryhackme.com/room/linuxthreatdetection3", kind: "room" } ],
+    note: "Module badge for Linux Security Monitoring (SOC Level 1)." },
+  { slug: "malware-explorer", name: "Malware Explorer", desc: "Identified and classified different types of malware", img: "malware-explorer.png", category: "defensive",
+    rooms: [ { title: "SOC Level 1 path", url: "https://tryhackme.com/path/outline/soclevel1", kind: "path" }, { title: "Malware Classification", url: "https://tryhackme.com/room/malwareclassification", kind: "room" }, { title: "Intro to Malware Analysis", url: "https://tryhackme.com/room/intromalwareanalysis", kind: "room" }, { title: "Living Off the Land Attacks", url: "https://tryhackme.com/room/livingoffthelandattacks", kind: "room" }, { title: "Shadow Trace", url: "https://tryhackme.com/room/shadowtrace", kind: "room" } ],
+    note: "Module badge for Malware Concepts for SOC (SOC Level 1)." },
+  { slug: "lookup-champion", name: "Lookup Champion", desc: "Investigated the attack through TI lookups", img: "lookup-champion.png", category: "defensive",
+    rooms: [ { title: "SOC Level 1 path", url: "https://tryhackme.com/path/outline/soclevel1", kind: "path" }, { title: "Intro to Cyber Threat Intel", url: "https://tryhackme.com/room/cyberthreatintel", kind: "room" }, { title: "File and Hash Threat Intel", url: "https://tryhackme.com/room/fileandhashthreatintel", kind: "room" }, { title: "IP and Domain Threat Intel", url: "https://tryhackme.com/room/ipanddomainthreatintel", kind: "room" }, { title: "Invite Only", url: "https://tryhackme.com/room/invite-only", kind: "room" } ],
+    note: "Module badge for Threat Analysis Tools (SOC Level 1)." },
 
-  /* -------------------------- Security engineering ------------------- */
-  {
-    slug: "introduction-to-security-engineering",
-    name: "Introduction to Security Engineering",
-    category: "engineering",
-    rooms: [
-      { title: "Security Engineer Intro", url: "https://tryhackme.com/room/securityengineerintro", kind: "room" }
-    ]
-  },
-  {
-    slug: "software-security",
-    name: "Software Security",
-    category: "engineering",
-    rooms: [
-      { title: "OWASP API Security Top 10 - 1", url: "https://tryhackme.com/room/owaspapisecuritytop105w", kind: "room" },
-      { title: "OWASP API Security Top 10 - 2", url: "https://tryhackme.com/room/owaspapisecuritytop10d0", kind: "room" }
-    ],
-    note: "The badge triggers on part 2; part 1 is listed as its prerequisite."
-  },
-  {
-    slug: "network-and-system-security",
-    name: "Network and System Security",
-    category: "engineering",
-    rooms: [
-      { title: "Auditing and Monitoring", url: "https://tryhackme.com/room/auditingandmonitoringse", kind: "room" }
-    ]
-  },
-  {
-    slug: "calculated-risk",
-    name: "Calculated Risk",
-    category: "engineering",
-    rooms: [
-      { title: "Risk Management", url: "https://tryhackme.com/room/seriskmanagement", kind: "room" }
-    ]
-  },
-  {
-    slug: "just-have-to-deal-with-it",
-    name: "Just have to deal with it",
-    category: "engineering",
-    rooms: [
-      { title: "Cyber Crisis Management", url: "https://tryhackme.com/room/cybercrisismanagement", kind: "room" }
-    ]
-  },
-  {
-    slug: "cyber-ready",
-    name: "Cyber Ready",
-    category: "engineering",
-    rooms: [
-      { title: "Training Impact on Teams", url: "https://tryhackme.com/room/training", kind: "room" }
-    ]
-  },
+  /* DFIR "Sleuth" badges */
+  { slug: "mac-sleuth", name: "Mac Sleuth", desc: "", img: "", category: "defensive",
+    rooms: [ { title: "MacHunt", url: "https://tryhackme.com/room/machunt", kind: "room" } ], note: "DFIR path challenge room." },
+  { slug: "filesystem-sleuth", name: "Filesystem Sleuth", desc: "", img: "", category: "defensive",
+    rooms: [ { title: "Diskrupt", url: "https://tryhackme.com/room/diskrupt", kind: "room" } ], note: "DFIR path challenge room." },
+  { slug: "memory-sleuth", name: "Memory Sleuth", desc: "", img: "", category: "defensive",
+    rooms: [ { title: "Supplemental Memory", url: "https://tryhackme.com/room/supplementalmemory", kind: "room" } ], note: "DFIR path challenge room." },
+  { slug: "linux-sleuth", name: "Linux Sleuth", desc: "", img: "", category: "defensive",
+    rooms: [ { title: "IronShade", url: "https://tryhackme.com/room/ironshade", kind: "room" } ], note: "DFIR path challenge room." },
+  { slug: "windows-sleuth", name: "Windows Sleuth", desc: "", img: "", category: "defensive",
+    rooms: [ { title: "Blizzard", url: "https://tryhackme.com/room/blizzard", kind: "room" } ], note: "DFIR path challenge room." },
 
-  /* -------------------------------- Events --------------------------- */
-  {
-    slug: "christmas-2019",
-    name: "Christmas 2019",
-    category: "events",
-    aliases: ["Advent of Cyber 1", "AoC 2019"],
-    rooms: [
-      { title: "Advent of Cyber 1 (2019)", url: "https://tryhackme.com/room/25daysofchristmas", kind: "room" }
-    ]
-  },
-  {
-    slug: "advent-of-cyber-2",
-    name: "Advent of Cyber 2",
-    category: "events",
-    aliases: ["AoC 2020"],
-    rooms: [
-      { title: "Advent of Cyber 2 (2020)", url: "https://tryhackme.com/room/adventofcyber2", kind: "room" }
-    ],
-    verify: true,
-    note: "Badge existence for the 2020 event still needs confirmation from someone who completed it."
-  },
-  {
-    slug: "advent-of-cyber-3",
-    name: "Advent of Cyber 3",
-    category: "events",
-    aliases: ["AoC 2021"],
-    rooms: [
-      { title: "Advent of Cyber 3 (2021)", url: "https://tryhackme.com/room/adventofcyber3", kind: "room" }
-    ]
-  },
-  {
-    slug: "advent-of-cyber-4",
-    name: "Advent of Cyber 4",
-    category: "events",
-    aliases: ["AoC 2022"],
-    rooms: [
-      { title: "Advent of Cyber 4 (2022)", url: "https://tryhackme.com/room/adventofcyber4", kind: "room" }
-    ]
-  },
-  {
-    slug: "advent-of-cyber-2023",
-    name: "Advent of Cyber 2023",
-    category: "events",
-    aliases: ["AoC 2023"],
-    rooms: [
-      { title: "Advent of Cyber 2023", url: "https://tryhackme.com/room/adventofcyber2023", kind: "room" }
-    ]
-  },
-  {
-    slug: "snow-off",
-    name: "SNOW/OFF",
-    category: "events",
-    aliases: ["Side Quest 2023"],
-    rooms: [
-      { title: "Advent of Cyber '23 Side Quest", url: "https://tryhackme.com/room/adventofcyber23sidequest", kind: "room" }
-    ],
-    note: "Submit all four side-quest flags in this room."
-  },
-  {
-    slug: "the-return-of-the-yeti",
-    name: "The Return of the Yeti",
-    category: "events",
-    rooms: [
-      { title: "Frosteau Busy with Vim", url: "https://tryhackme.com/room/busyvimfrosteau", kind: "room" },
-      { title: "Snowy ARMageddon", url: "https://tryhackme.com/room/armageddon2r", kind: "room" },
-      { title: "The Bandit Surfer", url: "https://tryhackme.com/room/surfingyetiiscomingtotown", kind: "room" },
-      { title: "The Return of the Yeti", url: "https://tryhackme.com/room/adv3nt0fdbopsjcap", kind: "room" }
-    ],
-    note: "The four 2023 side-quest challenge rooms themselves. SNOW/OFF is the separate badge for submitting their flags."
-  },
-  {
-    slug: "advent-of-cyber-2024",
-    name: "Advent of Cyber 2024",
-    category: "events",
-    aliases: ["AoC 2024"],
-    rooms: [
-      { title: "Advent of Cyber 2024", url: "https://tryhackme.com/room/adventofcyber2024", kind: "room" }
-    ]
-  },
-  {
-    slug: "defrosted-five",
-    name: "Defrosted Five",
-    category: "events",
-    aliases: ["Side Quest 2024"],
-    rooms: [
-      { title: "Advent of Cyber '24 Side Quest", url: "https://tryhackme.com/room/adventofcyber24sidequest", kind: "room" }
-    ],
-    note: "Submit all five side-quest flags in this room."
-  },
-  {
-    slug: "advent-of-cyber-2025",
-    name: "Advent of Cyber 2025",
-    category: "events",
-    aliases: ["AoC 2025"],
-    rooms: [
-      { title: "Advent of Cyber 2025", url: "https://tryhackme.com/room/adventofcyber2025", kind: "room" }
-    ],
-    verify: true,
-    note: "Room slug and badge name to be confirmed after the 2025 event."
-  },
-  {
-    slug: "advent-of-cyber-25-side-quest",
-    name: "Advent of Cyber '25 Side Quest",
-    category: "events",
-    aliases: ["Side Quest 2025"],
-    rooms: [
-      { title: "Advent of Cyber '25 Side Quest", url: "https://tryhackme.com/room/adventofcyber25sidequest", kind: "room" }
-    ],
-    verify: true,
-    note: "Badge name and room slug to be confirmed."
-  },
-  {
-    slug: "3-million-legend",
-    name: "3 Million Legend",
-    category: "events",
-    aliases: ["TryHack3M"],
-    rooms: [
-      { title: "TryHack3M (module)", url: "https://tryhackme.com/module/three-million-special", kind: "module" },
-      { title: "TryHack3M: Bricks Heist", url: "https://tryhackme.com/room/tryhack3mbricksheist", kind: "room" },
-      { title: "TryHack3M: Burg3r Bytes", url: "https://tryhackme.com/room/burg3rbytes", kind: "room" },
-      { title: "TryHack3M: Sch3Ma D3Mon", url: "https://tryhackme.com/room/sch3mad3mon", kind: "room" },
-      { title: "TryHack3M: Subscribe", url: "https://tryhackme.com/room/subscribe", kind: "room" },
-      { title: "TryHack3M: TriCipher Summit", url: "https://tryhackme.com/room/tryhack3mencryptionchallenge", kind: "room" }
-    ],
-    note: "Complete every room of the 3-million-users celebration module."
-  },
+  /* ============================ AI Security ========================== */
+  { slug: "ai-path", name: "AI Path", desc: "Completing the AI Security learning path", img: "ai-security-path-badge.png", category: "ai",
+    rooms: [ { title: "AI Security path", url: "https://tryhackme.com/path/outline/aisecurity", kind: "path" } ], note: "Path badge: finish every module of the AI Security learning path." },
+  { slug: "adversarial-defence-ops", name: "Adversarial Defence Ops", desc: "Trained to Defend, Built to Learn.", img: "defensive-ai.png", category: "ai",
+    rooms: [ { title: "Defending AI (module)", url: "https://tryhackme.com/module/defensive-ai", kind: "module" }, { title: "Detecting Adversarial Attacks", url: "https://tryhackme.com/room/idadversarialattacks", kind: "room" }, { title: "Defending Adversarial Attacks", url: "https://tryhackme.com/room/defadversarialattacks", kind: "room" }, { title: "AI Forensics", url: "https://tryhackme.com/room/aiforensics", kind: "room" }, { title: "ContAInment", url: "https://tryhackme.com/room/containment", kind: "room" } ],
+    note: "Module badge: its image file is literally 'defensive-ai', the Defending AI module's code." },
+  { slug: "model-compromise", name: "Model Compromise", desc: "Completed the LLM Attacks Module", img: "web-application-2.png", category: "ai",
+    rooms: [ { title: "Attacking LLMs (module)", url: "https://tryhackme.com/module/attackingllm", kind: "module" }, { title: "Input Manipulation & Prompt Injection", url: "https://tryhackme.com/room/inputmanipulationpromptinjection", kind: "room" }, { title: "LLM Output Handling and Privacy Risks", url: "https://tryhackme.com/room/outputhandlingandprivacyrisks", kind: "room" }, { title: "Data Integrity & Model Poisoning", url: "https://tryhackme.com/room/modelpoisoning", kind: "room" }, { title: "Juicy", url: "https://tryhackme.com/room/juicy", kind: "room" }, { title: "BankGPT", url: "https://tryhackme.com/room/bankgpt", kind: "room" }, { title: "HealthGPT", url: "https://tryhackme.com/room/healthgpt", kind: "room" } ],
+    note: "Module badge for Attacking LLMs (Web Application Pentesting path)." },
 
-  /* -------------------------------- Series --------------------------- */
-  {
-    slug: "investigations",
-    name: "Investigations",
-    category: "series",
-    aliases: ["Investigating Windows"],
-    rooms: [
-      { title: "Investigating Windows", url: "https://tryhackme.com/room/investigatingwindows", kind: "room" },
-      { title: "Investigating Windows 2.0", url: "https://tryhackme.com/room/investigatingwindows2", kind: "room" },
-      { title: "Investigating Windows 3.x", url: "https://tryhackme.com/room/investigatingwindows3", kind: "room" }
-    ],
-    note: "Series badge. Enrol through Learn, then Practice, then Series — completing the rooms outside the series page may not count."
-  },
-  {
-    slug: "windcorp",
-    name: "WindCorp",
-    category: "series",
-    rooms: [
-      { title: "WindCorp (series)", url: "https://tryhackme.com/module/windcorp", kind: "module" },
-      { title: "Ra", url: "https://tryhackme.com/room/ra", kind: "room" },
-      { title: "Ra 2", url: "https://tryhackme.com/room/ra2", kind: "room" },
-      { title: "Set", url: "https://tryhackme.com/room/set", kind: "room" },
-      { title: "Osiris", url: "https://tryhackme.com/room/osiris", kind: "room" }
-    ],
-    note: "Series badge. Enrol via Learn, Practice, Series."
-  },
-  {
-    slug: "overpassed",
-    name: "Overpassed",
-    category: "series",
-    aliases: ["Overpass"],
-    rooms: [
-      { title: "Overpass (series)", url: "https://tryhackme.com/module/overpass", kind: "module" },
-      { title: "Overpass", url: "https://tryhackme.com/room/overpass", kind: "room" },
-      { title: "Overpass 2 - Hacked", url: "https://tryhackme.com/room/overpass2hacked", kind: "room" },
-      { title: "Overpass 3 - Hosting", url: "https://tryhackme.com/room/overpass3hosting", kind: "room" }
-    ],
-    note: "Series badge. Enrol via Learn, Practice, Series."
-  },
-  {
-    slug: "pentester-tools",
-    name: "Pentester Tools",
-    category: "series",
-    aliases: ["Pentesting Tools"],
-    rooms: [
-      { title: "Pentesting Tools (series)", url: "https://tryhackme.com/module/pentestingtools", kind: "module" },
-      { title: "Nmap", url: "https://tryhackme.com/room/furthernmap", kind: "room" },
-      { title: "Metasploit: Introduction", url: "https://tryhackme.com/room/metasploitintro", kind: "room" },
-      { title: "Burp Suite: The Basics", url: "https://tryhackme.com/room/burpsuitebasics", kind: "room" },
-      { title: "John The Ripper: The Basics", url: "https://tryhackme.com/room/johntheripperbasics", kind: "room" },
-      { title: "Nessus", url: "https://tryhackme.com/room/rpnessusredux", kind: "room" },
-      { title: "Hydra", url: "https://tryhackme.com/room/hydra", kind: "room" }
-    ],
-    note: "Series badge. Enrol via Learn, Practice, Series."
-  },
+  /* ============================ DevSecOps ============================ */
+  { slug: "docker", name: "Docker", desc: "Breaking out of a Docker container in 7 different ways", img: "docker.png", category: "devsecops",
+    rooms: [ { title: "The Docker Rodeo", url: "https://tryhackme.com/room/dockerrodeo", kind: "room" } ] },
+  { slug: "diplodocker", name: "Diplodocker", desc: "Finishing the Container Vulnerability Room!", img: "containersecurity.png", category: "devsecops",
+    rooms: [ { title: "Container Vulnerabilities", url: "https://tryhackme.com/room/containervulnerabilitiesDG", kind: "room" } ] },
+  { slug: "the-course-awakens", name: "The Course Awakens", desc: "Finishing the first room in the DevSecOps path!", img: "introtodevsecops.png", category: "devsecops",
+    rooms: [ { title: "Introduction to DevSecOps", url: "https://tryhackme.com/room/introductiontodevsecops", kind: "room" } ] },
+  { slug: "terminated", name: "Terminated!", desc: "Intro to IaC cleared! The resistance is saved!", img: "iacsecurity.png", category: "devsecops",
+    rooms: [ { title: "Intro to IaC", url: "https://tryhackme.com/room/introtoiac", kind: "room" } ] },
+  { slug: "pipeline-lieutenant", name: "Pipeline Lieutenant", desc: "Finishing the CI/CD Build and Security Room!", img: "securityofthepipeline.png", category: "devsecops", aliases: ["CI/CD and Build Security"],
+    rooms: [ { title: "CI/CD and Build Security", url: "https://tryhackme.com/room/cicdandbuildsecurity", kind: "room" } ] },
 
-  /* ----------------------------- Discontinued ------------------------ */
-  {
-    slug: "throwback",
-    name: "Throwback",
-    category: "discontinued",
-    rooms: [],
-    note: "The Throwback network was retired. The badge can no longer be earned; existing holders keep it."
-  },
-  {
-    slug: "act-of-kindness",
-    name: "Act of Kindness",
-    category: "discontinued",
-    rooms: [],
-    note: "Removed badge. Kept here for collectors who still display it."
-  }
+  /* ======================= Security engineering ====================== */
+  { slug: "introduction-to-security-engineering", name: "Introduction to Security Engineering", desc: "Completed the Security Engineer Intro room!", img: "introtosecurityengineering.svg", category: "engineering",
+    rooms: [ { title: "Security Engineer Intro", url: "https://tryhackme.com/room/securityengineerintro", kind: "room" } ] },
+  { slug: "software-security", name: "Software Security", desc: "Completed the OWASP API Security Top 10 rooms!", img: "softwaresecurity.png", category: "engineering",
+    rooms: [ { title: "OWASP API Security Top 10 - 1", url: "https://tryhackme.com/room/owaspapisecuritytop105w", kind: "room" }, { title: "OWASP API Security Top 10 - 2", url: "https://tryhackme.com/room/owaspapisecuritytop10d0", kind: "room" } ], note: "Both rooms; part 2 triggers it." },
+  { slug: "network-and-system-security", name: "Network and System Security", desc: "Finished the Auditing and Monitoring room!", img: "networkandsystemsecurity.png", category: "engineering",
+    rooms: [ { title: "Auditing and Monitoring", url: "https://tryhackme.com/room/auditingandmonitoringse", kind: "room" } ] },
+  { slug: "calculated-risk", name: "Calculated Risk", desc: "Completed the Risk Management room!", img: "threatsandrisks.png", category: "engineering",
+    rooms: [ { title: "Risk Management", url: "https://tryhackme.com/room/seriskmanagement", kind: "room" } ] },
+  { slug: "just-have-to-deal-with-it", name: "Just have to deal with it", desc: "Successfully managed a cyber crisis!", img: "managingincidents.png", category: "engineering",
+    rooms: [ { title: "Cyber Crisis Management", url: "https://tryhackme.com/room/cybercrisismanagement", kind: "room" } ] },
+  { slug: "cyber-ready", name: "Cyber Ready", desc: "Understanding impact of training on teams", img: "careerready.png", category: "engineering",
+    rooms: [ { title: "Training Impact on Teams", url: "https://tryhackme.com/room/training", kind: "room" } ] },
+
+  /* ============================== Events ============================= */
+  { slug: "christmas-2019", name: "Christmas 2019", desc: "Taking part in the Christmas CTF!", img: "adventofcyber.png", category: "events", aliases: ["Advent of Cyber 1", "AoC 2019"],
+    rooms: [ { title: "Advent of Cyber 1 (2019)", url: "https://tryhackme.com/room/25daysofchristmas", kind: "room" } ] },
+  { slug: "advent-of-cyber-3", name: "Advent of Cyber 3", desc: "Completing Advent of Cyber 3!", img: "adventofcyber.png", category: "events", aliases: ["AoC 2021"],
+    rooms: [ { title: "Advent of Cyber 3 (2021)", url: "https://tryhackme.com/room/adventofcyber3", kind: "room" } ], note: "There is no badge for Advent of Cyber 2 (2020)." },
+  { slug: "advent-of-cyber-4", name: "Advent of Cyber 4", desc: "Completing Advent of Cyber 4!", img: "adventofcyber4.png", category: "events", aliases: ["AoC 2022"],
+    rooms: [ { title: "Advent of Cyber 4 (2022)", url: "https://tryhackme.com/room/adventofcyber4", kind: "room" } ] },
+  { slug: "advent-of-cyber-2023", name: "Advent of Cyber 2023", desc: "Completed the Advent of Cyber 2023!", img: "adventofcyber5.png", category: "events", aliases: ["AoC 2023"],
+    rooms: [ { title: "Advent of Cyber 2023", url: "https://tryhackme.com/room/adventofcyber2023", kind: "room" } ] },
+  { slug: "the-return-of-the-yeti", name: "The Return of the Yeti", desc: "Completed at least one Advent of Cyber 2023 Side Quest Challenge!", img: "aoc5sidequest1.png", category: "events",
+    rooms: [ { title: "Advent of Cyber '23 Side Quest", url: "https://tryhackme.com/room/adventofcyber23sidequest", kind: "room" }, { title: "The Return of the Yeti", url: "https://tryhackme.com/room/adv3nt0fdbopsjcap", kind: "room" }, { title: "Snowy ARMageddon", url: "https://tryhackme.com/room/armageddon2r", kind: "room" }, { title: "Frosteau Busy with Vim", url: "https://tryhackme.com/room/busyvimfrosteau", kind: "room" }, { title: "The Bandit Surfer", url: "https://tryhackme.com/room/surfingyetiiscomingtotown", kind: "room" } ],
+    note: "Complete any ONE of the four 2023 side-quest challenges. SNOW/OFF is for all four." },
+  { slug: "snow-off", name: "SNOW/OFF", desc: "Completed all Advent of Cyber 2023 Side Quest Challenges!", img: "aoc5sidequest2.png", category: "events", aliases: ["Side Quest 2023"],
+    rooms: [ { title: "Advent of Cyber '23 Side Quest", url: "https://tryhackme.com/room/adventofcyber23sidequest", kind: "room" } ], note: "Submit all four side-quest flags in this room." },
+  { slug: "advent-of-cyber-2024", name: "Advent of Cyber 2024", desc: "Completing Advent of Cyber 2024!", img: "aoc5.png", category: "events", aliases: ["AoC 2024"],
+    rooms: [ { title: "Advent of Cyber 2024", url: "https://tryhackme.com/room/adventofcyber2024", kind: "room" } ] },
+  { slug: "defrosted-five", name: "Defrosted Five", desc: "Completing AoC Side Quest 2024!", img: "aocsidequest5.png", category: "events", aliases: ["Side Quest 2024"],
+    rooms: [ { title: "Advent of Cyber '24 Side Quest", url: "https://tryhackme.com/room/adventofcyber24sidequest", kind: "room" } ], note: "Submit all five side-quest flags in this room." },
+  { slug: "advent-of-cyber-2025", name: "Advent of Cyber 2025", desc: "Completing Advent of Cyber 2025!", img: "advent-of-cyber-2025.png", category: "events", aliases: ["AoC 2025"],
+    rooms: [ { title: "Advent of Cyber 2025 (event hub)", url: "https://tryhackme.com/adventofcyber25", kind: "path" }, { title: "Advent of Cyber 2025 (module of 24 daily rooms)", url: "https://tryhackme.com/module/aoc-2025-kra8blxfpajw0vn6", kind: "module" }, { title: "Day 1 - Shells Bells", url: "https://tryhackme.com/room/linuxcli-aoc2025-o1fpqkvxti", kind: "room" } ],
+    note: "Unlike earlier years, 2025 is 24 separate daily rooms, not one room. Complete all 24." },
+  { slug: "advent-of-cyber-2025-side-quest", name: "Advent of Cyber 2025 Side Quest", desc: "Completing Advent of Cyber 2025 Side Quest!", img: "advent-of-cyber-2025-side-quest.png", category: "events", aliases: ["Side Quest 2025"],
+    rooms: [ { title: "Side Quest hub", url: "https://tryhackme.com/adventofcyber25/sidequest", kind: "path" }, { title: "SQ1 - The Great Disappearing Act", url: "https://tryhackme.com/room/sq1-aoc2025-FzPnrt2SAu", kind: "room" }, { title: "SQ2 - Scheme Catcher", url: "https://tryhackme.com/room/sq2-aoc2025-JxiOKUSD9R", kind: "room" }, { title: "SQ3 - Carrotbane of My Existence", url: "https://tryhackme.com/room/sq3-aoc2025-bk3vvbcgiT", kind: "room" }, { title: "SQ4 - BreachBlocker Unlocker", url: "https://tryhackme.com/room/sq4-aoc2025-32LoZ4zePK", kind: "room" } ],
+    note: "Each side quest unlocks with a key hidden in the daily rooms. Complete all four." },
+  { slug: "3-million-legend", name: "3 Million Legend", desc: "Was a legend and solved any room in the 3 Million Users Special Module!", img: "3million.png", category: "events", aliases: ["TryHack3M"],
+    rooms: [ { title: "TryHack3M (module)", url: "https://tryhackme.com/module/three-million-special", kind: "module" }, { title: "TryHack3M: Bricks Heist", url: "https://tryhackme.com/room/tryhack3mbricksheist", kind: "room" }, { title: "TryHack3M: Burg3r Bytes", url: "https://tryhackme.com/room/burg3rbytes", kind: "room" }, { title: "TryHack3M: Sch3Ma D3Mon", url: "https://tryhackme.com/room/sch3mad3mon", kind: "room" }, { title: "TryHack3M: Subscribe", url: "https://tryhackme.com/room/subscribe", kind: "room" }, { title: "TryHack3M: TriCipher Summit", url: "https://tryhackme.com/room/tryhack3mencryptionchallenge", kind: "room" } ],
+    note: "Per TryHackMe's own description, solving ANY one room of the module is enough." },
+  { slug: "raffle-royalty", name: "Raffle Royalty", desc: "Participating in Hack2Win 2025!", img: "hack2win.png", category: "events",
+    rooms: [ { title: "Hack2Win: how to grab extra tickets", url: "https://tryhackme.com/room/hack2win", kind: "room" } ], note: "Event badge from the Hack2Win raffle (September 2025). Can only be earned during the event." },
+  { slug: "ai-odyssey", name: "AI Odyssey", desc: "Taking part in the AI Odyssey event!", img: "ai-odyssey-participation.svg", category: "events",
+    rooms: [], note: "Participation badge for TryHackMe's AI Odyssey event. Only available while the event runs." },
+
+  /* ============================== Series ============================= */
+  { slug: "investigations", name: "Investigations", desc: "Completing the Cyber Defense Investigation series", img: "investigations_badge.png", category: "series", aliases: ["Investigating Windows"],
+    rooms: [ { title: "Investigating Windows", url: "https://tryhackme.com/room/investigatingwindows", kind: "room" }, { title: "Investigating Windows 2.0", url: "https://tryhackme.com/room/investigatingwindows2", kind: "room" }, { title: "Investigating Windows 3.x", url: "https://tryhackme.com/room/investigatingwindows3", kind: "room" } ],
+    note: "Series badge. Enrol via Learn, Practice, Series; rooms done outside the series page may not count." },
+  { slug: "windcorp", name: "WindCorp", desc: "Completing the WindCorp series", img: "windcorp_badge.png", category: "series",
+    rooms: [ { title: "WindCorp (series)", url: "https://tryhackme.com/module/windcorp", kind: "module" }, { title: "Ra", url: "https://tryhackme.com/room/ra", kind: "room" }, { title: "Ra 2", url: "https://tryhackme.com/room/ra2", kind: "room" }, { title: "Set", url: "https://tryhackme.com/room/set", kind: "room" }, { title: "Osiris", url: "https://tryhackme.com/room/osiris", kind: "room" } ],
+    note: "Series badge. Enrol via Learn, Practice, Series." },
+  { slug: "overpassed", name: "Overpassed", desc: "Completing the Overpass series", img: "overpass_badge.png", category: "series", aliases: ["Overpass"],
+    rooms: [ { title: "Overpass (series)", url: "https://tryhackme.com/module/overpass", kind: "module" }, { title: "Overpass", url: "https://tryhackme.com/room/overpass", kind: "room" }, { title: "Overpass 2 - Hacked", url: "https://tryhackme.com/room/overpass2hacked", kind: "room" }, { title: "Overpass 3 - Hosting", url: "https://tryhackme.com/room/overpass3hosting", kind: "room" } ],
+    note: "Series badge. Enrol via Learn, Practice, Series." },
+  { slug: "pentester-tools", name: "Pentester Tools", desc: "Completing the Pentesting Tools series", img: "pentestingtools_badge.png", category: "series", aliases: ["Pentesting Tools"],
+    rooms: [ { title: "Pentesting Tools (series)", url: "https://tryhackme.com/module/pentestingtools", kind: "module" }, { title: "Nmap", url: "https://tryhackme.com/room/furthernmap", kind: "room" }, { title: "Metasploit: Introduction", url: "https://tryhackme.com/room/metasploitintro", kind: "room" }, { title: "Burp Suite: The Basics", url: "https://tryhackme.com/room/burpsuitebasics", kind: "room" }, { title: "John The Ripper: The Basics", url: "https://tryhackme.com/room/johntheripperbasics", kind: "room" }, { title: "Nessus", url: "https://tryhackme.com/room/rpnessusredux", kind: "room" }, { title: "Hydra", url: "https://tryhackme.com/room/hydra", kind: "room" } ],
+    note: "Series badge. Enrol via Learn, Practice, Series." },
+
+  /* =========================== SOC Simulator ========================= */
+  { slug: "first-alert-closed", name: "First alert closed", desc: "Closing your first alert", img: "soc-sim-first-alert-closed.png", category: "soc-sim",
+    rooms: [ { title: "SOC Simulator", url: "https://tryhackme.com/soc-sim", kind: "feature" } ], note: "Close one alert in any SOC Simulator scenario. The first scenario appears in the SOC Team Internals module of SOC Level 1." },
+  { slug: "first-scenario-completed", name: "First scenario completed", desc: "Completing your first scenario", img: "soc-sim-first-scenario-completed.png", category: "soc-sim",
+    rooms: [ { title: "SOC Simulator", url: "https://tryhackme.com/soc-sim", kind: "feature" } ] },
+  { slug: "100-true-positive-rate", name: "100% true positive rate", desc: "Achieving 100% true positive rate in a scenario", img: "soc-sim-100-percent-true-positive-rate.png", category: "soc-sim", aliases: ["true positive"],
+    rooms: [ { title: "SOC Simulator", url: "https://tryhackme.com/soc-sim", kind: "feature" } ], note: "Classify every alert in a scenario correctly. Easiest on the short introductory scenarios." },
+  { slug: "five-scenarios-completed", name: "Five scenarios completed", desc: "Completing 5 scenarios", img: "soc-sim-five-scenarios-completed.png", category: "soc-sim",
+    rooms: [ { title: "SOC Simulator", url: "https://tryhackme.com/soc-sim", kind: "feature" } ] },
+  { slug: "completed-a-tabletop-exercise", name: "Completed a tabletop exercise", desc: "Completed a tabletop exercise", img: "first-ttx-completed.png", category: "soc-sim", aliases: ["TTX", "tabletop"],
+    rooms: [ { title: "Tabletop exercises", url: "https://tryhackme.com/tabletop", kind: "feature" } ], verify: true, note: "Finish any tabletop exercise (TTX). Feature URL to be confirmed." },
+
+  /* ============================== Leagues ============================ */
+  { slug: "bronze-league", name: "Bronze League", desc: "Bronze League 1st place", img: "league-bronze.png", category: "leagues", rooms: [ { title: "Weekly leagues", url: "https://tryhackme.com/leagues", kind: "feature" } ] },
+  { slug: "silver-league", name: "Silver League", desc: "Silver League 1st place", img: "league-silver.png", category: "leagues", rooms: [ { title: "Weekly leagues", url: "https://tryhackme.com/leagues", kind: "feature" } ] },
+  { slug: "gold-league", name: "Gold League", desc: "Gold League 1st place", img: "league-gold.png", category: "leagues", rooms: [ { title: "Weekly leagues", url: "https://tryhackme.com/leagues", kind: "feature" } ] },
+  { slug: "platinum-league", name: "Platinum League", desc: "Platinum League 1st place", img: "league-platinum.png", category: "leagues", rooms: [ { title: "Weekly leagues", url: "https://tryhackme.com/leagues", kind: "feature" } ] },
+  { slug: "diamond-league", name: "Diamond League", desc: "Diamond League 1st place", img: "league-diamond.png", category: "leagues", rooms: [ { title: "Weekly leagues", url: "https://tryhackme.com/leagues", kind: "feature" } ] },
+  { slug: "ruby-league", name: "Ruby League", desc: "Ruby League 1st place", img: "league-ruby.png", category: "leagues", rooms: [ { title: "Weekly leagues", url: "https://tryhackme.com/leagues", kind: "feature" } ] },
+  { slug: "sapphire-league", name: "Sapphire League", desc: "Sapphire League 1st place", img: "league-saphire.png", category: "leagues", aliases: ["Saphire League"], rooms: [ { title: "Weekly leagues", url: "https://tryhackme.com/leagues", kind: "feature" } ] },
+  { slug: "chaos-reigns", name: "Chaos Reigns", desc: "Persistence pays: Awarded for overcoming league adversity.", img: "leagues-chaos.png", category: "leagues",
+    rooms: [ { title: "Weekly leagues", url: "https://tryhackme.com/leagues", kind: "feature" } ], note: "League badge, not a room: awarded for bouncing back after a league setback (TryHackMe does not publish the exact rule)." },
+  { slug: "league-locked-legend", name: "League Locked Legend", desc: "", img: "", category: "leagues", verify: true,
+    rooms: [ { title: "Weekly leagues", url: "https://tryhackme.com/leagues", kind: "feature" } ], note: "League badge; exact condition not yet documented." },
+  { slug: "king", name: "King", desc: "King of the Hill winner", img: "king.png", category: "leagues", rooms: [ { title: "King of the Hill", url: "https://tryhackme.com/games/koth", kind: "feature" } ], note: "Win a King of the Hill game." },
+  { slug: "monthly-hacker", name: "Monthly Hacker", desc: "", img: "", category: "leagues", rooms: [ { title: "Leaderboard", url: "https://tryhackme.com/leaderboards", kind: "feature" } ], note: "Be the top hacker of the month on the global leaderboard." },
+
+  /* ============================== Streaks ============================ */
+  { slug: "3-day-streak", name: "3 Day Streak", desc: "Achieving a 3 day hacking streak", img: "streak3.png", category: "streaks", rooms: [] },
+  { slug: "7-day-streak", name: "7 Day Streak", desc: "Achieving a 7 day hacking streak", img: "streak7.png", category: "streaks", rooms: [] },
+  { slug: "30-day-streak", name: "30 Day Streak", desc: "Hacking for 30 days solid", img: "streak30.png", category: "streaks", rooms: [] },
+  { slug: "90-day-streak", name: "90 Day Streak", desc: "Hacking for 90 days in a row", img: "streak90.png", category: "streaks", rooms: [] },
+  { slug: "180-day-streak", name: "180 Day Streak", desc: "Hacking for 180 days in a row", img: "streak180.png", category: "streaks", rooms: [] },
+  { slug: "365-day-streak", name: "365 Day Streak", desc: "Hacking for 365 days in a row", img: "streak365.png", category: "streaks", rooms: [] },
+  { slug: "500-day-streak", name: "500 Day Streak", desc: "Hacking for 500 days in a row", img: "streak500.png", category: "streaks", rooms: [] },
+  { slug: "750-day-streak", name: "750 Day Streak", desc: "Hacking for 750 days in a row", img: "streak750.png", category: "streaks", rooms: [] },
+  { slug: "1000-day-streak", name: "1000 Day Streak", desc: "Hacking for 1000 days in a row", img: "streak1000.png", category: "streaks", rooms: [] },
+  { slug: "1250-day-streak", name: "1250 Day Streak", desc: "Hacking for 1250 days in a row", img: "streak1250.png", category: "streaks", rooms: [] },
+  { slug: "1500-day-streak", name: "1500 Day Streak", desc: "Hacking for 1500 days in a row", img: "streak1500.png", category: "streaks", rooms: [] },
+  { slug: "1750-day-streak", name: "1750 Day Streak", desc: "", img: "streak1750.png", category: "streaks", rooms: [] },
+  { slug: "2000-day-streak", name: "2000 Day Streak", desc: "", img: "streak2000.png", category: "streaks", rooms: [] },
+
+  /* ============================= Platform ============================ */
+  { slug: "session-held", name: "Session Held", desc: "Completing 4 weekly missions in a row!", img: "session-held.svg", category: "platform",
+    rooms: [ { title: "Weekly missions (dashboard)", url: "https://tryhackme.com/dashboard", kind: "feature" } ], note: "Complete the weekly missions four weeks running." },
+  { slug: "first-mobile-quiz", name: "First Mobile Quiz", desc: "Completing your first quiz or recap on the mobile app!", img: "first-mobile-quiz.png", category: "platform",
+    rooms: [ { title: "TryHackMe mobile app", url: "https://tryhackme.com/mobile", kind: "feature" } ], verify: true, note: "Finish one quiz or room recap in the iOS/Android app." },
+  { slug: "study-group", name: "Study Group", desc: "", img: "", category: "platform", verify: true,
+    rooms: [], note: "Community badge tied to study groups / friends features. Exact condition not yet documented." },
+  { slug: "best-friends-forever", name: "Best Friends Forever", desc: "", img: "", category: "platform", verify: true,
+    rooms: [], note: "Community badge tied to the friends/following feature. Exact condition not yet documented." },
+  { slug: "trytrailme", name: "TryTrailMe", desc: "", img: "", category: "platform", verify: true,
+    rooms: [ { title: "TryHackMe Trail", url: "https://tryhackme.com/trail", kind: "feature" } ], note: "Appears tied to the Trail feature. Exact condition not yet documented." },
+  { slug: "alpha", name: "Alpha", desc: "", img: "", category: "platform", rooms: [], note: "Early-access programme badge. Not earnable through rooms." },
+  { slug: "beta", name: "Beta", desc: "", img: "", category: "platform", rooms: [], note: "Early-access / beta-tester badge. Not earnable through rooms." },
+
+  /* =========================== Discontinued ========================== */
+  { slug: "throwback", name: "Throwback", desc: "Hacking Throwback by exploiting a Windows AD network", img: "throwback.png", category: "discontinued",
+    rooms: [], note: "The Throwback network was retired. Existing holders keep the badge." },
+  { slug: "act-of-kindness", name: "Act of Kindness", desc: "To those who have shown to be truly kind", img: "actofkindness.png", category: "discontinued",
+    rooms: [], note: "Hand-awarded by TryHackMe staff in the early days; no longer given out." }
 ];
 
-/* Badges that do not come from a room at all. */
+/* Short explainer for the non-room badge families (rendered as a section). */
 window.OTHER_BADGES = [
-  { group: "Streaks", items: [
-    "7 Day Streak", "30 Day Streak", "90 Day Streak", "180 Day Streak", "365 Day Streak",
-    "500 Day Streak", "750 Day Streak", "1000 Day Streak", "1250 Day Streak", "1500 Day Streak"
-  ], how: "Answer at least one question every day. Streak freezes are available to subscribers." },
-  { group: "Weekly leagues", items: [
-    "Bronze League", "Silver League", "Gold League", "Diamond League", "Sapphire League"
-  ], how: "Finish first in your league bracket for the week." },
-  { group: "Competition", items: ["King", "Monthly Hacker"],
-    how: "King: win a King of the Hill game. Monthly Hacker: be the top hacker of the month." }
+  { group: "Streaks", how: "Answer at least one question every day. Subscribers get streak freezes.", items: ["3", "7", "30", "90", "180", "365", "500", "750", "1000", "1250", "1500", "1750", "2000 days"] },
+  { group: "Weekly leagues", how: "Finish 1st in your league bracket for the week. Chaos Reigns and League Locked Legend are special league badges.", items: ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ruby", "Sapphire"] },
+  { group: "SOC Simulator", how: "Play the SOC Simulator scenarios that appear inside the SOC Level 1 path (and standalone).", items: ["First alert closed", "First scenario completed", "100% true positive rate", "Five scenarios completed", "Completed a tabletop exercise"] },
+  { group: "Platform & events", how: "Habits, the mobile app, community features, and time-limited events.", items: ["Session Held", "First Mobile Quiz", "Study Group", "Best Friends Forever", "Raffle Royalty", "AI Odyssey", "King", "Monthly Hacker"] }
 ];
 
 window.CATEGORIES = {
-  fundamentals: { label: "Fundamentals", blurb: "Pre Security and Cyber Security 101 territory." },
-  web:          { label: "Web",          blurb: "Web application hacking, from HTTP to request smuggling." },
-  offensive:    { label: "Offensive",    blurb: "Boxes, networks, privilege escalation, Active Directory." },
-  defensive:    { label: "Defensive",    blurb: "SOC, DFIR, threat hunting, log analysis, malware." },
-  devsecops:    { label: "DevSecOps",    blurb: "Containers, pipelines, infrastructure as code." },
-  engineering:  { label: "Security engineering", blurb: "Risk, crisis management, secure design." },
-  events:       { label: "Events",       blurb: "Advent of Cyber, side quests, TryHack3M." },
-  series:       { label: "Series",       blurb: "Multi-room series you must enrol in from Learn, Practice, Series." },
-  discontinued: { label: "Discontinued", blurb: "Can no longer be earned." }
+  fundamentals: { label: "Fundamentals" },
+  web:          { label: "Web" },
+  offensive:    { label: "Offensive" },
+  defensive:    { label: "Defensive" },
+  ai:           { label: "AI security" },
+  devsecops:    { label: "DevSecOps" },
+  engineering:  { label: "Security engineering" },
+  events:       { label: "Events" },
+  series:       { label: "Series" },
+  "soc-sim":    { label: "SOC Simulator" },
+  leagues:      { label: "Leagues" },
+  streaks:      { label: "Streaks" },
+  platform:     { label: "Platform" },
+  discontinued: { label: "Discontinued" }
 };
 
-window.SITE = {
-  version: "2026.10",
-  updated: "2026-10-05"
-};
+window.SITE = { version: "2026.10.2", updated: "2026-10-18" };

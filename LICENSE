@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2026 TryHackMe Badge Finder contributors
+Copyright (c) 2026 bazeeza and TryHackMe Badge Finder contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,5 +22,5 @@ SOFTWARE.
 
 ---
 This licence covers the code and data in this repository only. "TryHackMe"
-and all badge names and badge artwork are the property of TryHackMe and are
-not covered by this licence.
+and all badge names, descriptions and artwork are the property of TryHackMe
+and are not covered by this licence.

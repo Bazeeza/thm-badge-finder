@@ -18,6 +18,7 @@ body:
       options:
         - Badge is missing from the list
         - Wrong room linked
+        - Confirming a "needs verification" badge
         - Room was renamed or moved
         - Badge was retired / can't be earned anymore
         - Note is inaccurate
@@ -33,4 +34,4 @@ body:
     id: proof
     attributes:
       label: How do you know?
-      description: e.g. "I completed only this room and the badge appeared", or a screenshot.
+      description: Best proof is your entry from https://tryhackme.com/api/v2/public-profile/badges?username=YOURNAME&limit=100 (slug, title, description, earnedAt) plus the room you completed just before.
