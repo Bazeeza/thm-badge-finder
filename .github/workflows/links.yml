@@ -11,11 +11,11 @@ jobs:
   lychee:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: Extract URLs from the data file
         run: grep -oE 'https://tryhackme\.com/[^" ]+' data/badges.js | sort -u > urls.txt && wc -l urls.txt
       - name: Check links
-        uses: lycheeverse/lychee-action@v2
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
         with:
           args: --no-progress --accept 200,301,302,403 --max-concurrency 4 urls.txt
           fail: true
