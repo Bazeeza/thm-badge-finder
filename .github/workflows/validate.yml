@@ -1,0 +1,31 @@
+name: Validate data (security)
+# Runs on every push and pull request. Uses "pull_request" (not
+# "pull_request_target"): code from a fork runs without secrets and with a
+# read-only token, so a malicious PR cannot reach the repository.
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: data/badges.js must be plain data (no code, no HTML, TryHackMe links only)
+        run: python3 -I scripts/safe_data.py
+      - name: Flag pull requests that change code, not just data
+        if: github.event_name == 'pull_request'
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          code=$(git diff --name-only "$BASE" HEAD | grep -v '^data/badges\.js$' || true)
+          if [ -n "$code" ]; then
+            echo "::warning::This pull request changes files other than data/badges.js. Review every line before merging:"
+            echo "$code"
+          else
+            echo "Data-only change."
+          fi

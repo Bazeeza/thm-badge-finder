@@ -5,6 +5,8 @@ on:
   workflow_dispatch:
   pull_request:
     paths: ["data/badges.js"]
+permissions:
+  contents: read
 jobs:
   lychee:
     runs-on: ubuntu-latest
