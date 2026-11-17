@@ -3,6 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Security: only this site's own scripts may run; no inline script, no eval. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://assets.tryhackme.com data:; connect-src https://tryhackme.com; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>TryHackMe Badge Finder — all 138 badges and the room that unlocks each one</title>
   <meta name="description" content="Every TryHackMe badge with the exact room, module, path or feature that awards it: Blue, OWASP Top 10, Advent of Cyber, SOC Level 1 badges, Sleuth badges, leagues, streaks and more. Searchable, with a progress tracker.">
   <meta name="keywords" content="TryHackMe badges, TryHackMe badge rooms, how to get TryHackMe badges, TryHackMe badge list, THM badges, TryHackMe rooms with badges, TryHackMe achievements, Advent of Cyber badge, TryHackMe SOC Level 1 badges, TryHackMe Sleuth badges">
@@ -192,6 +195,5 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script src="data/badges.js"></script>
 <script src="app.js"></script>
-<script>document.getElementById("site-version").textContent = (window.SITE && window.SITE.version) || "";</script>
 </body>
 </html>

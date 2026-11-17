@@ -26,6 +26,10 @@
 
   /* ---------------------------- helpers ------------------------------ */
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  /* Security: esc() does not stop "javascript:" URLs, so links and images are
+     also restricted to TryHackMe. scripts/safe_data.py enforces the same rules. */
+  const safeRoomUrl = (u) => (typeof u === "string" && /^https:\/\/tryhackme\.com\/[A-Za-z0-9/_.\-?=&%#]*$/.test(u)) ? u : "#";
+  const safeImgName = (n) => (typeof n === "string" && /^[A-Za-z0-9._-]+\.(png|svg|jpe?g|gif|webp)$/.test(n)) ? n : "";
 
   function initials(name) {
     const parts = name.replace(/[^A-Za-z0-9 ]/g, " ").trim().split(/\s+/).filter(Boolean);
@@ -49,7 +53,7 @@
   }
 
   /* Image fallback chain: TryHackMe CDN → local assets/badges/<slug>.png → initials */
-  window.__badgeImgFail = function (img) {
+  function badgeImgFail(img) {
     const step = Number(img.dataset.step || 0);
     if (step === 0 && img.dataset.local) {
       img.dataset.step = "1"; img.src = img.dataset.local; return;
@@ -57,12 +61,12 @@
     const span = document.createElement("span");
     span.className = "fallback"; span.textContent = img.dataset.initials || "?";
     img.replaceWith(span);
-  };
+  }
 
   /* ----------------------------- render ------------------------------ */
   function roomItem(r) {
     const label = r.kind === "module" ? "module" : r.kind === "path" ? "path" : r.kind === "feature" ? "feature" : "";
-    return `<li class="${esc(r.kind)}"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a>${label ? `<span class="kind">${label}</span>` : ""}</li>`;
+    return `<li class="${esc(r.kind)}"><a href="${esc(safeRoomUrl(r.url))}" target="_blank" rel="noopener noreferrer">${esc(r.title)}</a>${label ? `<span class="kind">${label}</span>` : ""}</li>`;
   }
 
   function card(b, i) {
@@ -70,14 +74,15 @@
     const cat = CATS[b.category] || { label: b.category };
     const disc = b.category === "discontinued";
     const local = `assets/badges/${b.slug}.png`;
-    const first = b.img ? (b.img.startsWith("http") ? b.img : IMG_BASE + b.img) : local;
+    const img = safeImgName(b.img);
+    const first = img ? IMG_BASE + img : local;
     const noRoomText = disc ? "No room — this badge can no longer be earned."
       : b.category === "streaks" ? "No room — answer at least one question a day."
       : "Not tied to a room.";
     return `<article class="badge-card${earned ? " earned" : ""}${disc ? " discontinued" : ""}" id="${esc(b.slug)}" style="--i:${i}">
       <div class="hex" aria-hidden="true"><div class="inner">
         <img src="${esc(first)}" alt="" loading="lazy" referrerpolicy="no-referrer"
-             data-local="${b.img ? esc(local) : ""}" data-initials="${esc(initials(b.name))}" onerror="window.__badgeImgFail(this)">
+             data-local="${img ? esc(local) : ""}" data-initials="${esc(initials(b.name))}">
       </div></div>
       <div class="head">
         <div>
@@ -125,7 +130,7 @@
     const order = ["all", ...Object.keys(CATS)];
     $("#chips").innerHTML = order.map(k => {
       const label = k === "all" ? "All" : CATS[k].label;
-      return `<button class="chip" type="button" data-cat="${k}" aria-pressed="${state.category === k}">${esc(label)}<span class="n">${counts[k] || 0}</span></button>`;
+      return `<button class="chip" type="button" data-cat="${esc(k)}" aria-pressed="${state.category === k}">${esc(label)}<span class="n">${counts[k] || 0}</span></button>`;
     }).join("");
   }
 
@@ -239,6 +244,10 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
+    /* Image fallback without an inline onerror attribute (blocked by the CSP).
+       "error" does not bubble, so it is caught in the capture phase. */
+    $("#grid").addEventListener("error", (e) => { if (e.target.tagName === "IMG") badgeImgFail(e.target); }, true);
+    const ver = $("#site-version"); if (ver) ver.textContent = (window.SITE && window.SITE.version) || "";
     renderChips(); renderGrid(); renderOther(); renderProgress(); renderFacts(); injectJsonLd(); bind();
     if (location.hash) { const el = document.getElementById(location.hash.slice(1)); if (el) setTimeout(() => el.scrollIntoView({ block: "center" }), 50); }
   });
