@@ -1,0 +1,6 @@
+# Only the structured "Fix a badge" form; no free-form issues.
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability (private)
+    url: https://github.com/Bazeeza/thm-badge-finder/security/advisories/new
+    about: Please do not open a public issue for security problems. See SECURITY.md.

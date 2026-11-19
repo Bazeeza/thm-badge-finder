@@ -206,15 +206,13 @@ Found a hole? Report it privately, see [SECURITY.md](SECURITY.md).
 ```mermaid
 flowchart LR
     A[Spot a wrong or missing badge] --> B{How do you want to help?}
-    B -->|Quick| C[Open an issue with the<br/>"Fix a badge" template]
-    B -->|Full| D[Fork → edit data/badges.js]
-    D --> E[Run scripts/build.py]
-    E --> F[Pull request, one badge per PR]
-    C --> G[Maintainer verifies and updates]
-    F --> G
+    B -->|Report| C[Open an issue with the<br/>"Fix a badge" template]
+    B -->|Confirm| D[Comment on an issue with<br/>your badge API entry]
+    C --> G[Maintainer verifies and updates data/badges.js]
+    D --> G
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Please do not add walkthroughs, flags, or artwork you do not have the right to redistribute — this is an index, not a cheat sheet.
+Issues and comments are open to everyone; pull requests are limited to collaborators, so every change is reviewed and applied by the maintainer. See [CONTRIBUTING.md](CONTRIBUTING.md). Please do not add walkthroughs, flags, or artwork you do not have the right to redistribute — this is an index, not a cheat sheet.
 
 ## Changelog
 
