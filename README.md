@@ -132,8 +132,11 @@ thm-badge-finder/
 │   ├── og-image.png               social preview card
 │   └── favicon.svg
 ├── scripts/
-│   └── build.py                   regenerates BADGES.md, sitemap.xml and the README table
+│   ├── build.py                   regenerates BADGES.md, sitemap.xml and the README table
+│   ├── safe_data.py               reads badges.js as plain data (never runs it) and validates it
+│   └── test_safe_data.py          attack tests for the validator
 ├── .github/
+│   ├── workflows/validate.yml     validation + attack tests on every push and pull request
 │   ├── workflows/links.yml        weekly dead-link check (lychee)
 │   └── ISSUE_TEMPLATE/badge-fix.yml  structured "fix a badge" form
 ├── BADGES.md                      generated Markdown table
@@ -141,6 +144,7 @@ thm-badge-finder/
 ├── robots.txt
 ├── 404.html
 ├── CONTRIBUTING.md
+├── SECURITY.md                    security policy and how to report a vulnerability
 └── LICENSE
 ```
 
@@ -186,6 +190,16 @@ Each entry carries the badge slug, title, official description, image URL and th
 | 4 | Submit to Google Search Console and Bing; post on r/tryhackme and the TryHackMe Discord | Open |
 | 5 | Per-badge difficulty and estimated time, sourced from the community | Idea |
 | 6 | Nightly Action that diffs the public badge API against the dataset and opens an issue for new badges | Idea |
+
+## Security
+
+Built for a community of hackers, so it is hardened like one would expect:
+strict Content Security Policy (no inline script or style), every text escaped,
+only TryHackMe links and images, untrusted imports filtered, a data file that is
+validated as plain data and never executed, 28 attack tests in CI, pinned
+Actions with a read-only token, and a protected `main` branch.
+
+Found a hole? Report it privately, see [SECURITY.md](SECURITY.md).
 
 ## Contributing
 
