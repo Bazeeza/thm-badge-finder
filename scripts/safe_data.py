@@ -26,7 +26,7 @@ RE_DANGER = re.compile(r"<|>|javascript:|data:|vbscript:|on[a-z]+\s*=", re.I)
 # Markdown link or break the table. Invisible and bidi characters can hide
 # text from a reviewer ("Trojan Source"), so they are refused too.
 RE_MARKDOWN = re.compile(r"[\[\]|`\\]")
-RE_INVISIBLE = re.compile("[\x00-\x1f\x7f-\x9f­​-‏ -‮⁠-⁩﻿]")
+RE_INVISIBLE = re.compile("[\x00-\x1f\x7f-\x9f\xad\u200b-\u200f\u2028-\u202e\u2060-\u2069\ufeff]")
 MAX_TEXT = 600
 
 
@@ -49,7 +49,7 @@ class _Parser:
         s = self.s
         while self.i < len(s):
             c = s[self.i]
-            if c in " \t\r\n﻿":
+            if c in " \t\r\n\ufeff":
                 self.i += 1
             elif s.startswith("/*", self.i):
                 end = s.find("*/", self.i + 2)
@@ -252,7 +252,7 @@ def parse_text(text):
     # Whole-file check, comments included: no control, invisible or bidi
     # character anywhere (tab and line breaks only), so what a reviewer reads
     # is what the browser runs.
-    m = RE_INVISIBLE.search(text.lstrip("﻿").replace("\r\n", "\n").replace("\t", " ").replace("\n", " "))
+    m = RE_INVISIBLE.search(text.lstrip("\ufeff").replace("\r\n", "\n").replace("\t", " ").replace("\n", " "))
     if m:
         raise DataError("data/badges.js: invisible or control character U+%04X is not allowed" % ord(m.group(0)))
     g = _Parser(text).program()
