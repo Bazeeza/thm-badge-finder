@@ -9,6 +9,7 @@
 [![Live site](https://img.shields.io/badge/live%20site-bazeeza.github.io-E0B45A?style=flat-square)](https://bazeeza.github.io/thm-badge-finder/)
 [![Badges indexed](https://img.shields.io/badge/badges-138-141821?style=flat-square)](#badge-table)
 [![Room links](https://img.shields.io/badge/room%20links-200%2B-141821?style=flat-square)](BADGES.md)
+[![Data validation](https://img.shields.io/github/actions/workflow/status/bazeeza/thm-badge-finder/validate.yml?label=data%20validation&style=flat-square)](https://github.com/bazeeza/thm-badge-finder/actions/workflows/validate.yml)
 [![Link check](https://img.shields.io/github/actions/workflow/status/bazeeza/thm-badge-finder/links.yml?label=room%20links%20valid&style=flat-square)](https://github.com/bazeeza/thm-badge-finder/actions/workflows/links.yml)
 [![Last commit](https://img.shields.io/github/last-commit/bazeeza/thm-badge-finder?style=flat-square)](https://github.com/bazeeza/thm-badge-finder/commits/main)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2E3749?style=flat-square)](LICENSE)
@@ -16,6 +17,8 @@
 </div>
 
 ---
+
+**Contents:** [Why](#why-this-exists) · [Overview](#project-overview) · [Features](#what-the-site-does) · [How it is built](#how-it-is-built) · [How badges are awarded](#how-badges-are-awarded) · [Layout](#repository-layout) · [Run locally](#run-it-locally) · [Data source](#the-data-source-tryhackmes-public-badge-api) · [Roadmap](#roadmap) · [Security](#security) · [Contributing](#contributing) · [Badge table](#badge-table)
 
 ## Why this exists
 
@@ -135,14 +138,19 @@ thm-badge-finder/
 │   ├── build.py                   regenerates BADGES.md, sitemap.xml and the README table
 │   ├── safe_data.py               reads badges.js as plain data (never runs it) and validates it
 │   └── test_safe_data.py          attack tests for the validator
+├── docs/
+│   └── update-post.md             announcement text for Reddit, Discord and LinkedIn
 ├── .github/
 │   ├── workflows/validate.yml     validation + attack tests on every push and pull request
 │   ├── workflows/links.yml        weekly dead-link check (lychee)
-│   └── ISSUE_TEMPLATE/badge-fix.yml  structured "fix a badge" form
+│   ├── ISSUE_TEMPLATE/badge-fix.yml  structured "fix a badge" form
+│   ├── ISSUE_TEMPLATE/config.yml  no blank issues, private security link
+│   └── dependabot.yml             weekly updates for the pinned Actions
 ├── BADGES.md                      generated Markdown table
 ├── sitemap.xml                    generated
 ├── robots.txt
 ├── 404.html
+├── CHANGELOG.md                   data and site versions
 ├── CONTRIBUTING.md
 ├── SECURITY.md                    security policy and how to report a vulnerability
 └── LICENSE
@@ -158,11 +166,15 @@ cd thm-badge-finder
 python3 -m http.server 8000     # then open http://localhost:8000
 ```
 
-After editing `data/badges.js`:
+After editing `data/badges.js`, run the same checks as the CI, then regenerate the derived files:
 
 ```bash
+python3 -I scripts/safe_data.py         # data must be plain data: no code, no HTML, TryHackMe links only
+python3 -I scripts/test_safe_data.py    # 28 planted payloads: the validator must refuse each one
 python3 scripts/build.py --site https://bazeeza.github.io/thm-badge-finder/
 ```
+
+`-I` runs Python in [isolated mode](https://docs.python.org/3/using/cmdline.html#cmdoption-I): it ignores `PYTHON*` environment variables and leaves the script's directory and the user's site-packages out of the import path, which is how the CI runs both checks.
 
 ## Badge artwork
 
