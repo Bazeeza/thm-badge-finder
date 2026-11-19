@@ -233,7 +233,9 @@
     /* Import from a TryHackMe username: calls the public profile-badges API. */
     $("#thm-import-btn").addEventListener("click", async () => {
       const user = $("#thm-user").value.trim(); if (!user) return;
-      const status = $("#thm-import-status"); status.textContent = "Fetching…";
+      const status = $("#thm-import-status");
+      if (!/^[A-Za-z0-9_.-]{1,40}$/.test(user)) { status.textContent = "A TryHackMe username only has letters, digits, _ . and -"; return; }
+      status.textContent = "Fetching…";
       try {
         const res = await fetch(`https://tryhackme.com/api/v2/public-profile/badges?username=${encodeURIComponent(user)}&page=1&limit=200`, { mode: "cors" });
         if (!res.ok) throw new Error(res.status);
