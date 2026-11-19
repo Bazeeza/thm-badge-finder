@@ -9,6 +9,8 @@
   const CATS = window.CATEGORIES || {};
   const IMG_BASE = window.BADGE_IMG_BASE || "";
   const STORAGE_KEY = "thm-badge-finder:earned:v1";
+  const KNOWN = new Set(BADGES.map(b => b.slug));
+  const MAX_IMPORT_BYTES = 64 * 1024;
 
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -16,8 +18,14 @@
   /* ------------------------------ state ------------------------------ */
   const state = { query: "", category: "all", sort: "category", onlyUnearned: false, earned: loadEarned() };
 
+  /* Security: progress comes from localStorage or a user-chosen file, so it is
+     untrusted. Keep only strings that are the slug of a known badge. */
+  function knownSlugs(list) {
+    return Array.isArray(list) ? list.filter(s => typeof s === "string" && KNOWN.has(s)) : [];
+  }
+
   function loadEarned() {
-    try { const raw = localStorage.getItem(STORAGE_KEY); return new Set(raw ? JSON.parse(raw) : []); }
+    try { const raw = localStorage.getItem(STORAGE_KEY); return new Set(raw ? knownSlugs(JSON.parse(raw)) : []); }
     catch (e) { return new Set(); }
   }
   function saveEarned() {
@@ -198,9 +206,11 @@
     });
     $("#import").addEventListener("change", (e) => {
       const f = e.target.files[0]; if (!f) return;
+      if (f.size > MAX_IMPORT_BYTES) { toast("That file is too large to be a progress export"); e.target.value = ""; return; }
       f.text().then(t => {
-        const data = JSON.parse(t); const list = Array.isArray(data) ? data : data.earned;
-        if (!Array.isArray(list)) throw new Error("bad file");
+        const data = JSON.parse(t); const raw = Array.isArray(data) ? data : data && data.earned;
+        if (!Array.isArray(raw)) throw new Error("bad file");
+        const list = knownSlugs(raw);
         list.forEach(s => state.earned.add(s)); saveEarned(); renderGrid(); renderProgress();
         toast(`Imported ${list.length} badges`);
       }).catch(() => toast("That file is not a progress export"));
