@@ -174,3 +174,8 @@ footer a { color: var(--ink-soft); }
   body { background: #fff; color: #000; }
   .badge-card { break-inside: avoid; border: 1px solid #999; }
 }
+
+/* 404 page (no inline <style>, so its CSP can stay strict) */
+.notfound { min-height: 70vh; display: grid; place-items: center; text-align: center; padding: 40px 20px; }
+.notfound h1 { font-size: 2rem; margin-bottom: 10px; }
+.notfound p { color: var(--muted); }
