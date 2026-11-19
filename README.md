@@ -164,11 +164,15 @@ cd thm-badge-finder
 python3 -m http.server 8000     # then open http://localhost:8000
 ```
 
-After editing `data/badges.js`:
+After editing `data/badges.js`, run the same checks as the CI, then regenerate the derived files:
 
 ```bash
+python3 -I scripts/safe_data.py         # data must be plain data: no code, no HTML, TryHackMe links only
+python3 -I scripts/test_safe_data.py    # 28 planted payloads: the validator must refuse each one
 python3 scripts/build.py --site https://bazeeza.github.io/thm-badge-finder/
 ```
+
+`-I` runs Python in [isolated mode](https://docs.python.org/3/using/cmdline.html#cmdoption-I): it ignores `PYTHON*` environment variables and leaves the script's directory and the user's site-packages out of the import path, which is how the CI runs both checks.
 
 ## Badge artwork
 
