@@ -115,6 +115,8 @@ section + section { border-top: 1px solid var(--line); }
 .earn input:checked + .box { background: var(--brass); border-color: var(--brass); }
 .earn input:checked + .box svg { opacity: 1; }
 .earn input:focus-visible + .box { outline: 2px solid var(--focus); outline-offset: 2px; }
+.earn.flat { margin: 0; }
+.status-line { color: var(--muted); font-size: .9rem; }
 .badge-card.earned .earn { color: var(--brass); }
 .desc { grid-column: 1 / -1; margin: -4px 0 0; color: var(--ink-soft); font-size: 0.9rem; font-style: italic; }
 .rooms { grid-column: 1 / -1; margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; }

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Security: only this site's own scripts may run; no inline script, no eval. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://assets.tryhackme.com data:; connect-src https://tryhackme.com; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://assets.tryhackme.com data:; connect-src https://tryhackme.com; base-uri 'none'; form-action 'none'; object-src 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>TryHackMe Badge Finder — all 138 badges and the room that unlocks each one</title>
   <meta name="description" content="Every TryHackMe badge with the exact room, module, path or feature that awards it: Blue, OWASP Top 10, Advent of Cyber, SOC Level 1 badges, Sleuth badges, leagues, streaks and more. Searchable, with a progress tracker.">
@@ -71,7 +71,7 @@
     <div class="wrap">
       <h1>Every TryHackMe badge, and the room that unlocks it.</h1>
       <p class="lead">Badge icons on TryHackMe aren't clickable, so finding the right room means guessing. This is the lookup table the platform doesn't have: all 138 badges, each with the room, module, path or feature that awards it — search one, open it, mark it earned.</p>
-      <form class="search" role="search" onsubmit="return false">
+      <form class="search" role="search">
         <label>
           <span class="visually-hidden">Search badges and rooms</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
@@ -92,7 +92,7 @@
     <div class="wrap">
       <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
       <div class="right">
-        <label class="earn" style="margin:0">
+        <label class="earn flat">
           <input type="checkbox" id="only-unearned">
           <span class="box"><svg viewBox="0 0 12 12" fill="none" stroke="#1A1406" stroke-width="2"><path d="M2 6.5l2.6 2.5L10 3.5"/></svg></span>
           Hide earned
@@ -154,7 +154,7 @@
           <input class="text-input" id="thm-user" placeholder="TryHackMe username" autocomplete="off" maxlength="40" pattern="[A-Za-z0-9_.\-]{1,40}">
           <button class="btn primary" id="thm-import-btn" type="button">Import from TryHackMe</button>
         </p>
-        <p id="thm-import-status" style="color:var(--muted);font-size:.9rem"></p>
+        <p id="thm-import-status" class="status-line"></p>
         <p class="row">
           <button class="btn" id="share" type="button">Copy share text</button>
           <button class="btn" id="export" type="button">Export progress</button>

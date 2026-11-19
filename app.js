@@ -87,7 +87,7 @@
     const noRoomText = disc ? "No room — this badge can no longer be earned."
       : b.category === "streaks" ? "No room — answer at least one question a day."
       : "Not tied to a room.";
-    return `<article class="badge-card${earned ? " earned" : ""}${disc ? " discontinued" : ""}" id="${esc(b.slug)}" style="--i:${i}">
+    return `<article class="badge-card${earned ? " earned" : ""}${disc ? " discontinued" : ""}" id="${esc(b.slug)}">
       <div class="hex" aria-hidden="true"><div class="inner">
         <img src="${esc(first)}" alt="" loading="lazy" referrerpolicy="no-referrer"
              data-local="${img ? esc(local) : ""}" data-initials="${esc(initials(b.name))}">
@@ -129,6 +129,8 @@
     grid.classList.toggle("entering", firstPaint); firstPaint = false;
     grid.innerHTML = list.length ? list.map(card).join("")
       : `<div class="empty"><b>No badge matches.</b><br>Try the badge name, a room name, or part of the room URL.</div>`;
+    /* Animation delay set through the CSSOM, not a style="" attribute, so the CSP needs no 'unsafe-inline'. */
+    $$(".badge-card", grid).forEach((el, i) => el.style.setProperty("--i", i));
     $("#result-count").textContent = `${list.length} of ${BADGES.length}`;
   }
 
@@ -176,6 +178,7 @@
   /* ---------------------------- interactions ------------------------- */
   function bind() {
     const search = $("#search");
+    $("form.search").addEventListener("submit", (e) => e.preventDefault());
     const params = new URLSearchParams(location.search);
     if (params.get("q")) { search.value = params.get("q"); state.query = search.value; renderGrid(); }
     search.addEventListener("input", () => { state.query = search.value; renderGrid(); });
