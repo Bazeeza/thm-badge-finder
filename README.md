@@ -18,6 +18,8 @@
 
 ---
 
+**Contents:** [Why](#why-this-exists) · [Overview](#project-overview) · [Features](#what-the-site-does) · [How it is built](#how-it-is-built) · [How badges are awarded](#how-badges-are-awarded) · [Layout](#repository-layout) · [Run locally](#run-it-locally) · [Data source](#the-data-source-tryhackmes-public-badge-api) · [Roadmap](#roadmap) · [Security](#security) · [Contributing](#contributing) · [Badge table](#badge-table)
+
 ## Why this exists
 
 On TryHackMe, badge icons on a profile are not clickable. If you see a badge you want, there is no built-in way to find the room that awards it — you search the platform, guess, or ask on Discord. Several badges also have traps: the room was renamed, the badge moved to a newer version of the room, or it only triggers on the last room of a module.
