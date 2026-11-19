@@ -9,6 +9,7 @@
 [![Live site](https://img.shields.io/badge/live%20site-bazeeza.github.io-E0B45A?style=flat-square)](https://bazeeza.github.io/thm-badge-finder/)
 [![Badges indexed](https://img.shields.io/badge/badges-138-141821?style=flat-square)](#badge-table)
 [![Room links](https://img.shields.io/badge/room%20links-200%2B-141821?style=flat-square)](BADGES.md)
+[![Data validation](https://img.shields.io/github/actions/workflow/status/bazeeza/thm-badge-finder/validate.yml?label=data%20validation&style=flat-square)](https://github.com/bazeeza/thm-badge-finder/actions/workflows/validate.yml)
 [![Link check](https://img.shields.io/github/actions/workflow/status/bazeeza/thm-badge-finder/links.yml?label=room%20links%20valid&style=flat-square)](https://github.com/bazeeza/thm-badge-finder/actions/workflows/links.yml)
 [![Last commit](https://img.shields.io/github/last-commit/bazeeza/thm-badge-finder?style=flat-square)](https://github.com/bazeeza/thm-badge-finder/commits/main)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2E3749?style=flat-square)](LICENSE)
