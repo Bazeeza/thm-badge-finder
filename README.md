@@ -136,14 +136,19 @@ thm-badge-finder/
 │   ├── build.py                   regenerates BADGES.md, sitemap.xml and the README table
 │   ├── safe_data.py               reads badges.js as plain data (never runs it) and validates it
 │   └── test_safe_data.py          attack tests for the validator
+├── docs/
+│   └── update-post.md             announcement text for Reddit, Discord and LinkedIn
 ├── .github/
 │   ├── workflows/validate.yml     validation + attack tests on every push and pull request
 │   ├── workflows/links.yml        weekly dead-link check (lychee)
-│   └── ISSUE_TEMPLATE/badge-fix.yml  structured "fix a badge" form
+│   ├── ISSUE_TEMPLATE/badge-fix.yml  structured "fix a badge" form
+│   ├── ISSUE_TEMPLATE/config.yml  no blank issues, private security link
+│   └── dependabot.yml             weekly updates for the pinned Actions
 ├── BADGES.md                      generated Markdown table
 ├── sitemap.xml                    generated
 ├── robots.txt
 ├── 404.html
+├── CHANGELOG.md                   data and site versions
 ├── CONTRIBUTING.md
 ├── SECURITY.md                    security policy and how to report a vulnerability
 └── LICENSE
