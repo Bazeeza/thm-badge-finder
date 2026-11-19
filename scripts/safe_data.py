@@ -22,6 +22,11 @@ RE_SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 RE_IMG = re.compile(r"^[A-Za-z0-9._-]+\.(?:png|svg|jpe?g|gif|webp)$")
 RE_URL = re.compile(r"^https://tryhackme\.com/[A-Za-z0-9/_.\-?=&%#]*$")
 RE_DANGER = re.compile(r"<|>|javascript:|data:|vbscript:|on[a-z]+\s*=", re.I)
+# Text also goes into BADGES.md and the README: [ ] | ` \ could inject a
+# Markdown link or break the table. Invisible and bidi characters can hide
+# text from a reviewer ("Trojan Source"), so they are refused too.
+RE_MARKDOWN = re.compile(r"[\[\]|`\\]")
+RE_INVISIBLE = re.compile("[\x00-\x1f\x7f-\x9f­​-‏ -‮⁠-⁩﻿]")
 MAX_TEXT = 600
 
 
@@ -52,8 +57,11 @@ class _Parser:
                     self.err("unclosed comment")
                 self.i = end + 2
             elif s.startswith("//", self.i):
-                end = s.find("\n", self.i)
-                self.i = len(s) if end < 0 else end + 1
+                # A JS line comment also ends at \r (and U+2028/U+2029, which
+                # are refused for the whole file). Stopping only at \n would let
+                # code hide "inside" a comment that the browser would execute.
+                m = re.compile(r"[\r\n]").search(s, self.i)
+                self.i = len(s) if m is None else m.end()
             else:
                 break
 
@@ -165,6 +173,10 @@ def _text(v, where, required=True):
         raise DataError("%s: longer than %d characters" % (where, MAX_TEXT))
     if RE_DANGER.search(v):
         raise DataError("%s: contains HTML or script-like text: %r" % (where, v[:60]))
+    if RE_MARKDOWN.search(v):
+        raise DataError("%s: characters [ ] | ` \\ are not allowed: %r" % (where, v[:60]))
+    if RE_INVISIBLE.search(v):
+        raise DataError("%s: contains an invisible or control character" % where)
 
 
 def validate(g):
@@ -232,7 +244,18 @@ def validate(g):
 
 def load_data():
     """Returns (badges, other, categories, site) after full validation."""
-    g = _Parser(DATA.read_text(encoding="utf-8")).program()
+    return parse_text(DATA.read_text(encoding="utf-8"))
+
+
+def parse_text(text):
+    """Parses and validates the content of a badges.js file (used by the tests)."""
+    # Whole-file check, comments included: no control, invisible or bidi
+    # character anywhere (tab and line breaks only), so what a reviewer reads
+    # is what the browser runs.
+    m = RE_INVISIBLE.search(text.lstrip("﻿").replace("\r\n", "\n").replace("\t", " ").replace("\n", " "))
+    if m:
+        raise DataError("data/badges.js: invisible or control character U+%04X is not allowed" % ord(m.group(0)))
+    g = _Parser(text).program()
     validate(g)
     return g["BADGES"], g["OTHER_BADGES"], g["CATEGORIES"], g["SITE"]
 
