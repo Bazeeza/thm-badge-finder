@@ -123,9 +123,9 @@ Generated from `data/badges.js` on 2026-10-18. Edit the data file, not this one.
 | <img src="https://assets.tryhackme.com/img/badges/streak1000.png" width="36" alt=""> **1000 Day Streak** | Streaks | — | *"Hacking for 1000 days in a row"* |
 | <img src="https://assets.tryhackme.com/img/badges/streak1250.png" width="36" alt=""> **1250 Day Streak** | Streaks | — | *"Hacking for 1250 days in a row"* |
 | <img src="https://assets.tryhackme.com/img/badges/streak1500.png" width="36" alt=""> **1500 Day Streak** | Streaks | — | *"Hacking for 1500 days in a row"* |
-| <img src="https://assets.tryhackme.com/img/badges/streak1750.png" width="36" alt=""> **1750 Day Streak** | Streaks | — |  |
+| **1750 Day Streak** | Streaks | — |  |
 | <img src="https://assets.tryhackme.com/img/badges/streak180.png" width="36" alt=""> **180 Day Streak** | Streaks | — | *"Hacking for 180 days in a row"* |
-| <img src="https://assets.tryhackme.com/img/badges/streak2000.png" width="36" alt=""> **2000 Day Streak** | Streaks | — |  |
+| **2000 Day Streak** | Streaks | — |  |
 | <img src="https://assets.tryhackme.com/img/badges/streak3.png" width="36" alt=""> **3 Day Streak** | Streaks | — | *"Achieving a 3 day hacking streak"* |
 | <img src="https://assets.tryhackme.com/img/badges/streak30.png" width="36" alt=""> **30 Day Streak** | Streaks | — | *"Hacking for 30 days solid"* |
 | <img src="https://assets.tryhackme.com/img/badges/streak365.png" width="36" alt=""> **365 Day Streak** | Streaks | — | *"Hacking for 365 days in a row"* |

@@ -333,8 +333,8 @@ window.BADGES = [
   { slug: "1000-day-streak", name: "1000 Day Streak", desc: "Hacking for 1000 days in a row", img: "streak1000.png", category: "streaks", rooms: [] },
   { slug: "1250-day-streak", name: "1250 Day Streak", desc: "Hacking for 1250 days in a row", img: "streak1250.png", category: "streaks", rooms: [] },
   { slug: "1500-day-streak", name: "1500 Day Streak", desc: "Hacking for 1500 days in a row", img: "streak1500.png", category: "streaks", rooms: [] },
-  { slug: "1750-day-streak", name: "1750 Day Streak", desc: "", img: "streak1750.png", category: "streaks", rooms: [] },
-  { slug: "2000-day-streak", name: "2000 Day Streak", desc: "", img: "streak2000.png", category: "streaks", rooms: [] },
+  { slug: "1750-day-streak", name: "1750 Day Streak", desc: "", img: "", category: "streaks", rooms: [] },
+  { slug: "2000-day-streak", name: "2000 Day Streak", desc: "", img: "", category: "streaks", rooms: [] },
 
   /* ============================= Platform ============================ */
   { slug: "session-held", name: "Session Held", desc: "Completing 4 weekly missions in a row!", img: "session-held.svg", category: "platform",
