@@ -49,7 +49,7 @@ This project is the lookup table TryHackMe does not provide: a static, searchabl
 | Search | Press `/` and type a badge name, a room name, or part of a room URL. |
 | Filters | Fundamentals, Web, Offensive, Defensive, AI security, DevSecOps, Security engineering, Events, Series, SOC Simulator, Leagues, Streaks, Platform, Discontinued. |
 | Badge cards | Official badge art, TryHackMe's badge description, the room links, the kind of link (room, module, path, feature), and a note on gotchas. |
-| Progress tracker | Tick a badge as earned, or import your public TryHackMe badge list (open it from the site, copy, paste: TryHackMe blocks other sites from reading it directly). Progress is stored in your browser only; export, import and share text are built in. |
+| Progress tracker | Tick the badges you have earned. Progress is stored in your browser only; export, import and share text are built in. |
 | Deep links | Every badge has a permanent anchor, e.g. `/#blue`, `/#hash-cracker`, for sharing on Discord or Reddit. |
 | Non-room badges | SOC Simulator, streaks, weekly leagues (Bronze to Sapphire, Chaos Reigns), King, Monthly Hacker, mobile app, events — all trackable. |
 | Guidance | How module and series badges really trigger, a suggested order, and a "didn't get the badge?" checklist. |

@@ -18,9 +18,6 @@ Yes, this project is built for a community of hackers. It is meant to hold up.
   `https://tryhackme.com/...` links and plain image file names are used.
 - Imported progress files and saved progress are untrusted: size-limited, and
   only the ids of real badges are kept.
-- The TryHackMe username field accepts letters, digits, `_ . -` only. The
-  pasted badge list is parsed as JSON (never executed), size-limited, and only
-  matched against the known badges.
 - External links open with `rel="noopener noreferrer"`.
 
 **The data (`data/badges.js`)**

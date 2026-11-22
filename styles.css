@@ -119,10 +119,6 @@ section + section { border-top: 1px solid var(--line); }
 .earn input:focus-visible + .box { outline: 2px solid var(--focus); outline-offset: 2px; }
 .earn.flat { margin: 0; }
 .status-line { color: var(--muted); font-size: .9rem; }
-.import-steps { padding-left: 1.3em; }
-.import-steps li { margin-bottom: 10px; }
-.import-steps label { display: block; margin-bottom: 6px; }
-.text-input.paste { display: block; width: 100%; height: auto; min-height: 72px; padding: 8px 12px; resize: vertical; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .8rem; }
 .badge-card.earned .earn { color: var(--brass); }
 .desc { grid-column: 1 / -1; margin: -4px 0 0; color: var(--ink-soft); font-size: 0.9rem; font-style: italic; }
 .rooms { grid-column: 1 / -1; margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; }

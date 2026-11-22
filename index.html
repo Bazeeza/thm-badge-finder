@@ -151,18 +151,7 @@
       </div>
       <div class="prose">
         <h2>Track your progress</h2>
-        <p>Tick the badges you own. Progress stays in this browser. To fill it in automatically from your public TryHackMe profile (TryHackMe blocks other sites from reading it directly, so it takes one copy-paste):</p>
-        <ol class="import-steps">
-          <li><label for="thm-user">Type your TryHackMe username, then open your badge list.</label>
-            <span class="row">
-              <input class="text-input" id="thm-user" placeholder="TryHackMe username" autocomplete="off" spellcheck="false" maxlength="40" pattern="[A-Za-z0-9_.\-]{1,40}">
-              <a class="btn primary" id="thm-open" href="https://tryhackme.com/" target="_blank" rel="noopener noreferrer">Open my badge list</a>
-            </span></li>
-          <li><label for="thm-paste">On that tab, select all (Ctrl+A), copy (Ctrl+C) and paste it here.</label>
-            <textarea class="text-input paste" id="thm-paste" rows="3" spellcheck="false" autocomplete="off" placeholder="Paste the badge list here"></textarea></li>
-          <li><button class="btn primary" id="thm-import-btn" type="button">Import my badges</button></li>
-        </ol>
-        <p id="thm-import-status" class="status-line" role="status" aria-live="polite"></p>
+        <p>Tick the badges you own. Progress stays in this browser only: nothing is sent anywhere. Use Export to save it to a file and Import file to restore it on another browser.</p>
         <p class="row">
           <button class="btn" id="share" type="button">Copy share text</button>
           <button class="btn" id="export" type="button">Export progress</button>
