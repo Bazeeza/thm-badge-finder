@@ -49,7 +49,7 @@ This project is the lookup table TryHackMe does not provide: a static, searchabl
 | Search | Press `/` and type a badge name, a room name, or part of a room URL. |
 | Filters | Fundamentals, Web, Offensive, Defensive, AI security, DevSecOps, Security engineering, Events, Series, SOC Simulator, Leagues, Streaks, Platform, Discontinued. |
 | Badge cards | Official badge art, TryHackMe's badge description, the room links, the kind of link (room, module, path, feature), and a note on gotchas. |
-| Progress tracker | Tick a badge as earned, or type a TryHackMe username to import its public badge list. Progress is stored in your browser only; export, import and share text are built in. |
+| Progress tracker | Tick a badge as earned, or import your public TryHackMe badge list (open it from the site, copy, paste: TryHackMe blocks other sites from reading it directly). Progress is stored in your browser only; export, import and share text are built in. |
 | Deep links | Every badge has a permanent anchor, e.g. `/#blue`, `/#hash-cracker`, for sharing on Discord or Reddit. |
 | Non-room badges | SOC Simulator, streaks, weekly leagues (Bronze to Sapphire, Chaos Reigns), King, Monthly Hacker, mobile app, events — all trackable. |
 | Guidance | How module and series badges really trigger, a suggested order, and a "didn't get the badge?" checklist. |
@@ -181,7 +181,7 @@ python3 scripts/build.py --site https://bazeeza.github.io/thm-badge-finder/
 
 Cards load the official artwork straight from TryHackMe's badge CDN (`https://assets.tryhackme.com/img/badges/<file>`), the same URLs TryHackMe's own profile pages use, so nothing is redistributed by this repo. If a CDN image fails, the site tries `assets/badges/<slug>.png`, then shows a placeholder with the badge's initials.
 
-19 badges have no known CDN file yet (the five Sleuth badges, MalBuster, Flow Hunter, APT X Hunter, M365 Sentry, Domain Guardian, Tooling Specialist, SOC Level-Up, League Locked Legend, Study Group, Best Friends Forever, TryTrailMe, Alpha, Beta, Monthly Hacker). To fill one in, either find its file name through the public badge API of a user who holds it (see below) and set `img`, or drop a PNG at `assets/badges/<slug>.png`.
+21 badges have no known CDN file yet (the 1750 and 2000 Day Streak, the five Sleuth badges, MalBuster, Flow Hunter, APT X Hunter, M365 Sentry, Domain Guardian, Tooling Specialist, SOC Level-Up, League Locked Legend, Study Group, Best Friends Forever, TryTrailMe, Alpha, Beta, Monthly Hacker). To fill one in, either find its file name through the public badge API of a user who holds it (see below) and set `img`. Until then the card shows the badge initials.
 
 ## The data source: TryHackMe's public badge API
 
@@ -198,7 +198,7 @@ Each entry carries the badge slug, title, official description, image URL and th
 | Stage | Scope | Status |
 |---|---|---|
 | 1 | Data model, site, search, filters, tracker, deploy to Pages | Done |
-| 2 | Official badge artwork via TryHackMe's CDN, local fallback for the 19 without a known file | Done |
+| 2 | Official badge artwork via TryHackMe's CDN, initials for the 21 without a known file | Done |
 | 3 | Confirm the 14 *needs verification* entries (SOC Level 2 module badges, Tooling Specialist, WAF Evasion, platform badges) | Open |
 | 4 | Submit to Google Search Console and Bing; post on r/tryhackme and the TryHackMe Discord | Open |
 | 5 | Per-badge difficulty and estimated time, sourced from the community | Idea |
@@ -366,9 +366,9 @@ Generated from `data/badges.js`. The same data, with notes, is on the [live site
 | <img src="https://assets.tryhackme.com/img/badges/streak1000.png" width="36" alt=""> **1000 Day Streak** | Streaks | — | *"Hacking for 1000 days in a row"* |
 | <img src="https://assets.tryhackme.com/img/badges/streak1250.png" width="36" alt=""> **1250 Day Streak** | Streaks | — | *"Hacking for 1250 days in a row"* |
 | <img src="https://assets.tryhackme.com/img/badges/streak1500.png" width="36" alt=""> **1500 Day Streak** | Streaks | — | *"Hacking for 1500 days in a row"* |
-| <img src="https://assets.tryhackme.com/img/badges/streak1750.png" width="36" alt=""> **1750 Day Streak** | Streaks | — |  |
+| **1750 Day Streak** | Streaks | — |  |
 | <img src="https://assets.tryhackme.com/img/badges/streak180.png" width="36" alt=""> **180 Day Streak** | Streaks | — | *"Hacking for 180 days in a row"* |
-| <img src="https://assets.tryhackme.com/img/badges/streak2000.png" width="36" alt=""> **2000 Day Streak** | Streaks | — |  |
+| **2000 Day Streak** | Streaks | — |  |
 | <img src="https://assets.tryhackme.com/img/badges/streak3.png" width="36" alt=""> **3 Day Streak** | Streaks | — | *"Achieving a 3 day hacking streak"* |
 | <img src="https://assets.tryhackme.com/img/badges/streak30.png" width="36" alt=""> **30 Day Streak** | Streaks | — | *"Hacking for 30 days solid"* |
 | <img src="https://assets.tryhackme.com/img/badges/streak365.png" width="36" alt=""> **365 Day Streak** | Streaks | — | *"Hacking for 365 days in a row"* |

@@ -60,7 +60,8 @@
     clearTimeout(toast._t); toast._t = setTimeout(() => el.classList.remove("show"), 1800);
   }
 
-  /* Image fallback chain: TryHackMe CDN → local assets/badges/<slug>.png → initials */
+  /* Image fallback chain: TryHackMe CDN → local assets/badges/<slug>.png → initials.
+     A badge with no known CDN file shows its initials directly (no request, no 404). */
   function badgeImgFail(img) {
     const step = Number(img.dataset.step || 0);
     if (step === 0 && img.dataset.local) {
@@ -83,14 +84,14 @@
     const disc = b.category === "discontinued";
     const local = `assets/badges/${b.slug}.png`;
     const img = safeImgName(b.img);
-    const first = img ? IMG_BASE + img : local;
     const noRoomText = disc ? "No room — this badge can no longer be earned."
       : b.category === "streaks" ? "No room — answer at least one question a day."
       : "Not tied to a room.";
     return `<article class="badge-card${earned ? " earned" : ""}${disc ? " discontinued" : ""}" id="${esc(b.slug)}">
       <div class="hex" aria-hidden="true"><div class="inner">
-        <img src="${esc(first)}" alt="" loading="lazy" referrerpolicy="no-referrer"
-             data-local="${img ? esc(local) : ""}" data-initials="${esc(initials(b.name))}">
+        ${img ? `<img src="${esc(IMG_BASE + img)}" alt="" loading="lazy" referrerpolicy="no-referrer"
+             data-local="${esc(local)}" data-initials="${esc(initials(b.name))}">`
+          : `<span class="fallback">${esc(initials(b.name))}</span>`}
       </div></div>
       <div class="head">
         <div>
@@ -233,25 +234,67 @@
       navigator.clipboard?.writeText(location.origin + location.pathname + a.getAttribute("href")).then(() => toast("Badge link copied"));
     });
 
-    /* Import from a TryHackMe username: calls the public profile-badges API. */
-    $("#thm-import-btn").addEventListener("click", async () => {
-      const user = $("#thm-user").value.trim(); if (!user) return;
-      const status = $("#thm-import-status");
-      if (!/^[A-Za-z0-9_.-]{1,40}$/.test(user)) { status.textContent = "A TryHackMe username only has letters, digits, _ . and -"; return; }
-      status.textContent = "Fetching…";
-      try {
-        const res = await fetch(`https://tryhackme.com/api/v2/public-profile/badges?username=${encodeURIComponent(user)}&page=1&limit=200`, { mode: "cors" });
-        if (!res.ok) throw new Error(res.status);
-        const json = await res.json();
-        const docs = (json.data && (json.data.docs || json.data)) || json.docs || [];
-        const titles = new Set(docs.map(d => (d.title || "").toLowerCase()));
-        let n = 0;
-        BADGES.forEach(b => { if (titles.has(b.name.toLowerCase()) && !state.earned.has(b.slug)) { state.earned.add(b.slug); n++; } });
-        saveEarned(); renderGrid(); renderProgress();
-        status.textContent = `Imported ${docs.length} badges from ${user} (${n} new).`;
-      } catch (err) {
-        status.textContent = "Couldn't reach TryHackMe from the browser (CORS or private profile). Use Export/Import instead.";
+    /* Import from TryHackMe. TryHackMe's badge API sits behind a bot checkpoint
+       and sends no CORS header, so no other site can fetch it. The visitor opens
+       the API in their own tab and pastes the JSON here; it is parsed locally
+       (never executed) and only matched against the known badge list. */
+    const USER_RE = /^[A-Za-z0-9_.-]{1,40}$/;
+    const MAX_PASTE = 2 * 1024 * 1024;
+    const apiUrl = (u) => `https://tryhackme.com/api/v2/public-profile/badges?username=${encodeURIComponent(u)}&page=1&limit=200`;
+    const userBox = $("#thm-user"), openLink = $("#thm-open"), paste = $("#thm-paste"), status = $("#thm-import-status");
+    const syncOpenLink = () => {
+      const u = userBox.value.trim();
+      openLink.href = USER_RE.test(u) ? apiUrl(u) : "https://tryhackme.com/";
+    };
+    userBox.addEventListener("input", syncOpenLink);
+    openLink.addEventListener("click", (e) => {
+      const u = userBox.value.trim();
+      if (!USER_RE.test(u)) {
+        e.preventDefault();
+        status.textContent = u ? "A TryHackMe username only has letters, digits, _ . and -" : "Type your TryHackMe username first.";
+        userBox.focus(); return;
       }
+      syncOpenLink();
+      status.textContent = "Copy everything on the new tab, then paste it in step 2.";
+    });
+
+    const norm = (s) => String(s || "").toLowerCase().replace(/\s+/g, " ").trim();
+    const fileOf = (u) => { const m = /([A-Za-z0-9._-]+\.(?:png|svg|jpe?g|gif|webp))(?:[?#].*)?$/i.exec(String(u || "")); return m ? m[1].toLowerCase() : ""; };
+    function badgeDocs(json) {
+      const pick = (v) => Array.isArray(v) ? v : null;
+      if (!json || typeof json !== "object") return null;
+      return pick(json) || pick(json.docs) || pick(json.badges) ||
+        (json.data && (pick(json.data) || pick(json.data.docs) || pick(json.data.badges))) || null;
+    }
+    $("#thm-import-btn").addEventListener("click", () => {
+      const text = paste.value.trim();
+      if (!text) { status.textContent = "Paste your badge list in step 2 first."; paste.focus(); return; }
+      if (text.length > MAX_PASTE) { status.textContent = "That is too long to be a badge list."; return; }
+      if (/^</.test(text) || /security checkpoint/i.test(text)) { status.textContent = "That is a web page, not the badge list. Wait for the TryHackMe tab to finish loading, then copy again."; return; }
+      let json;
+      try { json = JSON.parse(text); } catch (err) { status.textContent = "That is not the badge list. Copy the whole page (Ctrl+A, then Ctrl+C) and paste again."; return; }
+      const docs = badgeDocs(json);
+      if (!docs) {
+        status.textContent = json && json.status && json.status !== "success"
+          ? "TryHackMe answered with an error: check the username, and that the profile is public."
+          : "No badge list found in what you pasted.";
+        return;
+      }
+      const byName = new Map(), byFile = new Map();
+      BADGES.forEach(b => { byName.set(norm(b.name), b); if (safeImgName(b.img)) byFile.set(b.img.toLowerCase(), b); });
+      let matched = 0, added = 0; const unknown = [];
+      docs.slice(0, 1000).forEach(d => {
+        if (!d || typeof d !== "object") return;
+        const title = typeof d.title === "string" ? d.title : typeof d.name === "string" ? d.name : "";
+        const b = byName.get(norm(title)) || byFile.get(fileOf(d.image || d.img || d.imageUrl));
+        if (!b) { if (title && unknown.length < 5) unknown.push(title.slice(0, 60)); return; }
+        matched++;
+        if (!state.earned.has(b.slug)) { state.earned.add(b.slug); added++; }
+      });
+      saveEarned(); renderGrid(); renderProgress();
+      status.textContent = `Found ${docs.length} badges in your list: ${matched} matched, ${added} newly marked as earned.` +
+        (unknown.length ? ` Not on this site yet: ${unknown.join(", ")}. Please open an issue so we can add them.` : "");
+      if (matched) { paste.value = ""; toast(`Imported ${added} new badges`); }
     });
 
     const report = $("#report-link");

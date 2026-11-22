@@ -12,13 +12,15 @@ Yes, this project is built for a community of hackers. It is meant to hold up.
 - Strict Content Security Policy: only the site's own scripts run. No inline
   script, no inline style, no `eval`, no plugins, no forms sent anywhere, no
   `<base>` hijacking. Images only from the site and TryHackMe's badge CDN;
-  network requests only to TryHackMe's public API.
+  no network requests at all (`connect-src` is not allowed).
 - Every piece of text is HTML-escaped before it is displayed.
 - Links and images are checked again in the browser: only
   `https://tryhackme.com/...` links and plain image file names are used.
 - Imported progress files and saved progress are untrusted: size-limited, and
   only the ids of real badges are kept.
-- The TryHackMe username field accepts letters, digits, `_ . -` only.
+- The TryHackMe username field accepts letters, digits, `_ . -` only. The
+  pasted badge list is parsed as JSON (never executed), size-limited, and only
+  matched against the known badges.
 - External links open with `rel="noopener noreferrer"`.
 
 **The data (`data/badges.js`)**

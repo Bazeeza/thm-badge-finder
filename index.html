@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Security: only this site's own scripts may run; no inline script, no eval. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://assets.tryhackme.com data:; connect-src https://tryhackme.com; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://assets.tryhackme.com data:; base-uri 'none'; form-action 'none'; object-src 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>TryHackMe Badge Finder — all 138 badges and the room that unlocks each one</title>
   <meta name="description" content="Every TryHackMe badge with the exact room, module, path or feature that awards it: Blue, OWASP Top 10, Advent of Cyber, SOC Level 1 badges, Sleuth badges, leagues, streaks and more. Searchable, with a progress tracker.">
@@ -151,12 +151,18 @@
       </div>
       <div class="prose">
         <h2>Track your progress</h2>
-        <p>Tick the badges you own. Progress stays in this browser. To fill it in automatically, type your TryHackMe username — the site reads your public badge list.</p>
-        <p class="row">
-          <input class="text-input" id="thm-user" placeholder="TryHackMe username" autocomplete="off" maxlength="40" pattern="[A-Za-z0-9_.\-]{1,40}">
-          <button class="btn primary" id="thm-import-btn" type="button">Import from TryHackMe</button>
-        </p>
-        <p id="thm-import-status" class="status-line"></p>
+        <p>Tick the badges you own. Progress stays in this browser. To fill it in automatically from your public TryHackMe profile (TryHackMe blocks other sites from reading it directly, so it takes one copy-paste):</p>
+        <ol class="import-steps">
+          <li><label for="thm-user">Type your TryHackMe username, then open your badge list.</label>
+            <span class="row">
+              <input class="text-input" id="thm-user" placeholder="TryHackMe username" autocomplete="off" spellcheck="false" maxlength="40" pattern="[A-Za-z0-9_.\-]{1,40}">
+              <a class="btn primary" id="thm-open" href="https://tryhackme.com/" target="_blank" rel="noopener noreferrer">Open my badge list</a>
+            </span></li>
+          <li><label for="thm-paste">On that tab, select all (Ctrl+A), copy (Ctrl+C) and paste it here.</label>
+            <textarea class="text-input paste" id="thm-paste" rows="3" spellcheck="false" autocomplete="off" placeholder="Paste the badge list here"></textarea></li>
+          <li><button class="btn primary" id="thm-import-btn" type="button">Import my badges</button></li>
+        </ol>
+        <p id="thm-import-status" class="status-line" role="status" aria-live="polite"></p>
         <p class="row">
           <button class="btn" id="share" type="button">Copy share text</button>
           <button class="btn" id="export" type="button">Export progress</button>

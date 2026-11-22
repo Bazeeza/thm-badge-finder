@@ -71,6 +71,8 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 600; line-height: 1.
 }
 .select, .btn { font: 600 0.84rem var(--font-display); height: 34px; padding: 0 12px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--surface); color: var(--ink); cursor: pointer; white-space: nowrap; }
 .select { padding-right: 28px; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%2397A0B3' stroke-width='1.6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; }
+/* Links and labels styled as buttons: same centring as <button>, no underline. */
+.btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
 .btn:hover { border-color: var(--brass); }
 .btn.primary { background: var(--brass); color: var(--brass-ink); border-color: var(--brass); }
 .btn.primary:hover { background: #ECC26C; }
@@ -117,6 +119,10 @@ section + section { border-top: 1px solid var(--line); }
 .earn input:focus-visible + .box { outline: 2px solid var(--focus); outline-offset: 2px; }
 .earn.flat { margin: 0; }
 .status-line { color: var(--muted); font-size: .9rem; }
+.import-steps { padding-left: 1.3em; }
+.import-steps li { margin-bottom: 10px; }
+.import-steps label { display: block; margin-bottom: 6px; }
+.text-input.paste { display: block; width: 100%; height: auto; min-height: 72px; padding: 8px 12px; resize: vertical; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .8rem; }
 .badge-card.earned .earn { color: var(--brass); }
 .desc { grid-column: 1 / -1; margin: -4px 0 0; color: var(--ink-soft); font-size: 0.9rem; font-style: italic; }
 .rooms { grid-column: 1 / -1; margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; }
