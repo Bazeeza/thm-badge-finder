@@ -157,6 +157,7 @@ thm-badge-finder/
 ├── robots.txt
 ├── 404.html
 ├── CHANGELOG.md                   data and site versions
+├── CHANGELOG.fr.md                French version of the changelog
 ├── CONTRIBUTING.md
 ├── CONTRIBUTING.fr.md             French version of the contribution guide
 ├── SECURITY.md                    security policy and how to report a vulnerability
@@ -246,7 +247,7 @@ Les issues et les commentaires sont ouverts à tous ; les pull requests sont ré
 
 ## Journal des modifications
 
-Voir [CHANGELOG.md](CHANGELOG.md). Dernière version : **2026.10.2** : catalogue complet de 138 badges, descriptions et illustrations officielles, import à partir d'un nom d'utilisateur.
+Voir [CHANGELOG.fr.md](CHANGELOG.fr.md). Dernière version : **2026.10.2** : catalogue complet de 138 badges, descriptions et illustrations officielles, import à partir d'un nom d'utilisateur.
 
 ## Remerciements
 
