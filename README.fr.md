@@ -41,7 +41,9 @@ Ce projet est la table de correspondance que TryHackMe ne fournit pas : un site 
 | **Public** | Les utilisateurs de TryHackMe de tous les niveaux, du parcours Pre Security au parcours Red Team ; toute personne qui collectionne les badges. |
 | **Canal** | Dépôt GitHub public, publié avec GitHub Pages à l'adresse `https://bazeeza.github.io/thm-badge-finder/`. |
 | **Format** | Site statique (HTML, CSS, JavaScript sans framework) alimenté par un seul fichier de données. Aucun serveur applicatif, aucune étape de compilation nécessaire pour le lancer. |
-| **Langue** | Anglais. |
+| **Technologies** | HTML, CSS, JavaScript sans framework ; scripts Python 3 pour la validation, la génération et la vérification des liens ; GitHub Actions ; GitHub Pages. |
+| **Lire en premier** | Le [site en ligne](https://bazeeza.github.io/thm-badge-finder/), puis le [tableau des badges](#tableau-des-badges). |
+| **Langue** | Anglais. La documentation du dépôt existe aussi en français (`*.fr.md`). |
 | **Statut** | En ligne, maintenu avec la communauté. v2 (octobre 2026) : catalogue complet, descriptions et illustrations officielles. 14 badges marqués *needs verification* (à vérifier) attendent la confirmation d'une personne qui les possède. |
 | **Licence** | MIT pour le code et les données. Les illustrations des badges restent la propriété de TryHackMe. |
 
