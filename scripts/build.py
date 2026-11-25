@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regenerates BADGES.md, sitemap.xml and the README badge table from data/badges.js."""
+"""Regenerates BADGES.md, sitemap.xml and the badge table of README.md and README.fr.md from data/badges.js."""
 import argparse, re, datetime, pathlib, sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -34,9 +34,11 @@ def main():
     table = md_table(badges, cats)
     (ROOT / "BADGES.md").write_text("# All TryHackMe badges and their rooms\n\n" f"Generated from `data/badges.js` on {today}. Edit the data file, not this one.\n\n" + table + "\n\n## Badges with no room\n\n" + md_other(other) + "\n", encoding="utf-8")
     (ROOT / "sitemap.xml").write_text(sitemap(a.site, badges, today), encoding="utf-8")
-    readme = ROOT / "README.md"
-    if readme.exists():
-        txt = readme.read_text(encoding="utf-8")
-        readme.write_text(re.sub(r"(<!-- BADGES:START -->).*?(<!-- BADGES:END -->)", lambda m: m.group(1) + "\n" + table + "\n" + m.group(2), txt, flags=re.S), encoding="utf-8")
+    # Both language versions of the README carry the same generated table.
+    for name in ("README.md", "README.fr.md"):
+        readme = ROOT / name
+        if readme.exists():
+            txt = readme.read_text(encoding="utf-8")
+            readme.write_text(re.sub(r"(<!-- BADGES:START -->).*?(<!-- BADGES:END -->)", lambda m: m.group(1) + "\n" + table + "\n" + m.group(2), txt, flags=re.S), encoding="utf-8")
     print(f"ok: {len(badges)} badges, {sum(len(b['rooms']) for b in badges)} room links")
 if __name__ == "__main__": sys.exit(main())
