@@ -157,6 +157,7 @@ thm-badge-finder/
 ├── CHANGELOG.md                   data and site versions
 ├── CONTRIBUTING.md
 ├── SECURITY.md                    security policy and how to report a vulnerability
+├── SECURITY.fr.md                 French version of the security policy
 ├── LICENSE
 ├── README.md                      English version (this file)
 └── README.fr.md                   French version

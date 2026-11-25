@@ -159,6 +159,7 @@ thm-badge-finder/
 ├── CHANGELOG.md                   data and site versions
 ├── CONTRIBUTING.md
 ├── SECURITY.md                    security policy and how to report a vulnerability
+├── SECURITY.fr.md                 French version of the security policy
 ├── LICENSE
 ├── README.md                      English version
 └── README.fr.md                   French version (this file)
@@ -166,7 +167,7 @@ thm-badge-finder/
 
 `README.md` est la version anglaise, `README.fr.md` la version française (ce fichier).
 
-En français, ligne par ligne : le site (une seule page) ; jetons de design et mise en page ; recherche, filtres, suivi de progression, JSON-LD ; `badges.js` est le seul fichier qu'on modifie normalement ; images PNG des badges nommées par slug ; carte d'aperçu pour les réseaux sociaux ; `build.py` régénère `BADGES.md`, `sitemap.xml` et les tableaux des README ; `safe_data.py` lit `badges.js` comme de simples données (sans jamais l'exécuter) et le valide ; `check_links.py` vérifie poliment les liens morts (en respectant les limites de TryHackMe) ; `test_safe_data.py` contient les tests d'attaque du validateur ; `update-post.md` est le texte d'annonce pour Reddit, Discord et LinkedIn ; `validate.yml` lance la validation et les tests d'attaque à chaque push et pull request ; `links.yml` vérifie les liens chaque semaine ; `badge-fix.yml` est le formulaire structuré « corriger un badge » ; `config.yml` interdit les issues vides et donne le lien de sécurité privé ; `dependabot.yml` met à jour chaque semaine les Actions épinglées ; `BADGES.md` et `sitemap.xml` sont générés ; `CHANGELOG.md` suit les versions des données et du site ; `SECURITY.md` est la politique de sécurité.
+En français, ligne par ligne : le site (une seule page) ; jetons de design et mise en page ; recherche, filtres, suivi de progression, JSON-LD ; `badges.js` est le seul fichier qu'on modifie normalement ; images PNG des badges nommées par slug ; carte d'aperçu pour les réseaux sociaux ; `build.py` régénère `BADGES.md`, `sitemap.xml` et les tableaux des README ; `safe_data.py` lit `badges.js` comme de simples données (sans jamais l'exécuter) et le valide ; `check_links.py` vérifie poliment les liens morts (en respectant les limites de TryHackMe) ; `test_safe_data.py` contient les tests d'attaque du validateur ; `update-post.md` est le texte d'annonce pour Reddit, Discord et LinkedIn ; `validate.yml` lance la validation et les tests d'attaque à chaque push et pull request ; `links.yml` vérifie les liens chaque semaine ; `badge-fix.yml` est le formulaire structuré « corriger un badge » ; `config.yml` interdit les issues vides et donne le lien de sécurité privé ; `dependabot.yml` met à jour chaque semaine les Actions épinglées ; `BADGES.md` et `sitemap.xml` sont générés ; `CHANGELOG.md` suit les versions des données et du site ; `SECURITY.md` est la politique de sécurité (version française : `SECURITY.fr.md`).
 
 ## Lancer le site en local
 
@@ -227,7 +228,7 @@ politique de sécurité du contenu (CSP) stricte (aucun script ni style en ligne
 fichier de données validé comme de simples données et jamais exécuté, 28 tests d'attaque
 dans la CI, des Actions épinglées avec un jeton en lecture seule, et une branche `main` protégée.
 
-Vous avez trouvé une faille ? Signalez-la en privé, voir [SECURITY.md](SECURITY.md).
+Vous avez trouvé une faille ? Signalez-la en privé, voir [SECURITY.fr.md](SECURITY.fr.md).
 
 ## Contribuer
 
