@@ -158,6 +158,7 @@ thm-badge-finder/
 ├── 404.html
 ├── CHANGELOG.md                   data and site versions
 ├── CONTRIBUTING.md
+├── CONTRIBUTING.fr.md             French version of the contribution guide
 ├── SECURITY.md                    security policy and how to report a vulnerability
 ├── SECURITY.fr.md                 French version of the security policy
 ├── LICENSE
@@ -241,7 +242,7 @@ flowchart LR
     D --> G
 ```
 
-Les issues et les commentaires sont ouverts à tous ; les pull requests sont réservées aux collaborateurs, pour que chaque changement soit relu et appliqué par le mainteneur. Voir [CONTRIBUTING.md](CONTRIBUTING.md). Merci de ne pas ajouter de solutions (*walkthroughs*), de flags ni d'illustrations que vous n'avez pas le droit de redistribuer : c'est un index, pas une antisèche.
+Les issues et les commentaires sont ouverts à tous ; les pull requests sont réservées aux collaborateurs, pour que chaque changement soit relu et appliqué par le mainteneur. Voir [CONTRIBUTING.fr.md](CONTRIBUTING.fr.md). Merci de ne pas ajouter de solutions (*walkthroughs*), de flags ni d'illustrations que vous n'avez pas le droit de redistribuer : c'est un index, pas une antisèche.
 
 ## Journal des modifications
 
