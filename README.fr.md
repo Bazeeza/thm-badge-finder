@@ -147,7 +147,8 @@ thm-badge-finder/
 │   ├── check_links.py             polite dead-link check (handles TryHackMe rate limits)
 │   └── test_safe_data.py          attack tests for the validator
 ├── docs/
-│   └── update-post.md             announcement text for Reddit, Discord and LinkedIn
+│   ├── update-post.md             announcement text for Reddit, Discord and LinkedIn
+│   └── update-post.fr.md          French version of the announcement text
 ├── .github/
 │   ├── workflows/validate.yml     validation + attack tests on every push and pull request
 │   ├── workflows/links.yml        weekly dead-link check (scripts/check_links.py)

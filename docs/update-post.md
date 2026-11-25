@@ -1,5 +1,8 @@
 # Update post (for r/tryhackme, Discord, LinkedIn)
 
+[![Français](https://img.shields.io/badge/Langue-Français-3fe0a0?style=for-the-badge)](update-post.fr.md)
+[![English](https://img.shields.io/badge/Language-English-2b9dff?style=for-the-badge)](update-post.md)
+
 Copy whichever version fits the channel. Replace nothing — links are already live.
 
 ---
