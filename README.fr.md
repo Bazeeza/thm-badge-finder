@@ -136,7 +136,7 @@ thm-badge-finder/
 ├── data/
 │   └── badges.js                  ← the only file you normally edit
 ├── assets/
-│   ├── badges/                    badge PNGs named by slug (see assets/badges/README.md)
+│   ├── badges/                    badge PNGs named by slug (see assets/badges/README.fr.md)
 │   ├── og-image.png               social preview card
 │   └── favicon.svg
 ├── scripts/
