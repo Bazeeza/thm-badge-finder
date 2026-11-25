@@ -4,6 +4,9 @@
 
 # TryHackMe Badge Finder
 
+[![Français](https://img.shields.io/badge/Langue-Français-3fe0a0?style=for-the-badge)](README.fr.md)
+[![English](https://img.shields.io/badge/Language-English-2b9dff?style=for-the-badge)](README.md)
+
 **Every TryHackMe badge, and the exact room that unlocks it.**
 
 [![Live site](https://img.shields.io/badge/live%20site-bazeeza.github.io-E0B45A?style=flat-square)](https://bazeeza.github.io/thm-badge-finder/)
@@ -135,7 +138,7 @@ thm-badge-finder/
 │   ├── og-image.png               social preview card
 │   └── favicon.svg
 ├── scripts/
-│   ├── build.py                   regenerates BADGES.md, sitemap.xml and the README table
+│   ├── build.py                   regenerates BADGES.md, sitemap.xml and the README tables
 │   ├── safe_data.py               reads badges.js as plain data (never runs it) and validates it
 │   ├── check_links.py             polite dead-link check (handles TryHackMe rate limits)
 │   └── test_safe_data.py          attack tests for the validator
@@ -154,7 +157,9 @@ thm-badge-finder/
 ├── CHANGELOG.md                   data and site versions
 ├── CONTRIBUTING.md
 ├── SECURITY.md                    security policy and how to report a vulnerability
-└── LICENSE
+├── LICENSE
+├── README.md                      English version (this file)
+└── README.fr.md                   French version
 ```
 
 ## Run it locally
