@@ -1,5 +1,8 @@
 # Contributing
 
+[![Français](https://img.shields.io/badge/Langue-Français-3fe0a0?style=for-the-badge)](CONTRIBUTING.fr.md)
+[![English](https://img.shields.io/badge/Language-English-2b9dff?style=for-the-badge)](CONTRIBUTING.md)
+
 Contributions come in as **issues and comments**. Pull requests are limited to
 collaborators: the maintainer applies every change to `data/badges.js` after
 checking it, so nothing from outside reaches the site without review.

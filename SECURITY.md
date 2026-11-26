@@ -1,5 +1,8 @@
 # Security policy
 
+[![Français](https://img.shields.io/badge/Langue-Français-3fe0a0?style=for-the-badge)](SECURITY.fr.md)
+[![English](https://img.shields.io/badge/Language-English-2b9dff?style=for-the-badge)](SECURITY.md)
+
 TryHackMe Badge Finder is a static site (HTML, CSS, JavaScript) on GitHub Pages.
 There is no server, no login, no database and no cookie. Your progress is stored
 only in your own browser.

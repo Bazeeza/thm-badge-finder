@@ -4,6 +4,9 @@
 
 # TryHackMe Badge Finder
 
+[![Français](https://img.shields.io/badge/Langue-Français-3fe0a0?style=for-the-badge)](README.fr.md)
+[![English](https://img.shields.io/badge/Language-English-2b9dff?style=for-the-badge)](README.md)
+
 **Every TryHackMe badge, and the exact room that unlocks it.**
 
 [![Live site](https://img.shields.io/badge/live%20site-bazeeza.github.io-E0B45A?style=flat-square)](https://bazeeza.github.io/thm-badge-finder/)
@@ -38,7 +41,9 @@ This project is the lookup table TryHackMe does not provide: a static, searchabl
 | **Audience** | TryHackMe users of every level, from Pre Security to Red Team path; anyone building a badge collection. |
 | **Channel** | Public GitHub repository, published with GitHub Pages at `https://bazeeza.github.io/thm-badge-finder/`. |
 | **Format** | Static site (HTML, CSS, vanilla JavaScript) driven by one data file. No backend, no build step required to run. |
-| **Language** | English. |
+| **Technologies** | HTML, CSS, vanilla JavaScript; Python 3 scripts for validation, generation and link checks; GitHub Actions; GitHub Pages. |
+| **Start here** | The [live site](https://bazeeza.github.io/thm-badge-finder/), then the [badge table](#badge-table). |
+| **Language** | English. The repository documentation is also available in French (`*.fr.md`). |
 | **Status** | Live, community-maintained. v2 (October 2026): full catalogue, official descriptions and artwork. 14 badges flagged *needs verification* are awaiting confirmation from a holder. |
 | **Licence** | MIT for the code and data. Badge artwork remains the property of TryHackMe. |
 
@@ -135,12 +140,13 @@ thm-badge-finder/
 │   ├── og-image.png               social preview card
 │   └── favicon.svg
 ├── scripts/
-│   ├── build.py                   regenerates BADGES.md, sitemap.xml and the README table
+│   ├── build.py                   regenerates BADGES.md, sitemap.xml and the README tables
 │   ├── safe_data.py               reads badges.js as plain data (never runs it) and validates it
 │   ├── check_links.py             polite dead-link check (handles TryHackMe rate limits)
 │   └── test_safe_data.py          attack tests for the validator
 ├── docs/
-│   └── update-post.md             announcement text for Reddit, Discord and LinkedIn
+│   ├── update-post.md             announcement text for Reddit, Discord and LinkedIn
+│   └── update-post.fr.md          French version of the announcement text
 ├── .github/
 │   ├── workflows/validate.yml     validation + attack tests on every push and pull request
 │   ├── workflows/links.yml        weekly dead-link check (scripts/check_links.py)
@@ -152,9 +158,14 @@ thm-badge-finder/
 ├── robots.txt
 ├── 404.html
 ├── CHANGELOG.md                   data and site versions
+├── CHANGELOG.fr.md                French version of the changelog
 ├── CONTRIBUTING.md
+├── CONTRIBUTING.fr.md             French version of the contribution guide
 ├── SECURITY.md                    security policy and how to report a vulnerability
-└── LICENSE
+├── SECURITY.fr.md                 French version of the security policy
+├── LICENSE
+├── README.md                      English version (this file)
+└── README.fr.md                   French version
 ```
 
 ## Run it locally

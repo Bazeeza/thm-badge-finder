@@ -1,5 +1,8 @@
 # Changelog
 
+[![Français](https://img.shields.io/badge/Langue-Français-3fe0a0?style=for-the-badge)](CHANGELOG.fr.md)
+[![English](https://img.shields.io/badge/Language-English-2b9dff?style=for-the-badge)](CHANGELOG.md)
+
 All notable changes to the TryHackMe Badge Finder. Dates are the data version in `data/badges.js`.
 
 ## 2026.10.2 — 18 October 2026
